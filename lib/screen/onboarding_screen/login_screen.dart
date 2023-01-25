@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meet_up/screen/onboarding_screen/signup_screen.dart';
 import 'package:meet_up/widgets/custom_textFormField.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -22,9 +23,16 @@ class _LoginScreenState extends State<LoginScreen> {
       resizeToAvoidBottomInset: false,
       appBar: null,
       body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        color: Colors.white,
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        // color: Colors.white,
+        decoration: BoxDecoration(
+            gradient: LinearGradient(colors: [
+          Colors.white,
+          Colors.white24,
+          Colors.blue.shade50,
+          Colors.red.shade300
+        ], begin: FractionalOffset(1.0, 0.0), end: FractionalOffset(0.0, 1.0))),
         padding: const EdgeInsets.all(10),
         child: SafeArea(
           left: true,
@@ -40,15 +48,15 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Container(
                     width: 260,
                     height: 260,
-                    margin: const EdgeInsets.only(top: 10),
+                    margin: const EdgeInsets.only(top: 15),
                     child: Image.asset(
-                      'assets/images/login_ill.jpg',
+                      'assets/images/login_vector.png',
                       fit: BoxFit.cover,
                     ),
                   ),
                 ),
                 Container(
-                  margin: const EdgeInsets.only(top: 25, left: 10),
+                  margin: const EdgeInsets.only(top: 25, left: 10, bottom: 10),
                   child: const Text(
                     'Login',
                     style: TextStyle(
@@ -106,18 +114,18 @@ class _LoginScreenState extends State<LoginScreen> {
                           height: 45,
                           child: ElevatedButton(
                               onPressed: () {
-                                if (_formKey.currentState!.validate()) {
-                                  setState(() {
-                                    isValidForm = true;
-                                  });
-                                } else {
-                                  setState(() {
-                                    isValidForm = false;
-                                  });
-                                }
+                                // if (_formKey.currentState!.validate()) {
+                                //   setState(() {
+                                //     isValidForm = true;
+                                //   });
+                                // } else {
+                                //   setState(() {
+                                //     isValidForm = false;
+                                //   });
+                                // }
                               },
                               child: const Text(
-                                'Login',
+                                'Log in',
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontFamily: 'Poppins',
@@ -147,7 +155,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         const Text("Don't have an account?"),
                         const Text(' '),
                         InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (context) {
+                                return const SignupScreen();
+                              },
+                            ));
+                          },
                           child: const Text(
                             'Sign Up',
                             style: TextStyle(
