@@ -67,7 +67,7 @@ class OnboardingScreen extends StatelessWidget {
                               ));
                         },
                         child: const Text(
-                          'Get Started',
+                          'GET STARTED',
                           style: TextStyle(
                               color: Colors.white,
                               fontFamily: 'Poppins',

@@ -70,7 +70,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   txtController: mobileNumberTxt,
                   keyboardType: TextInputType.number,
                   prefixIcon: const Icon(Icons.mobile_friendly),
-                  suffixOnTap: () {},
                   hintText: 'Enter Your Mobile Number',
                   labelText: 'Mobile Number',
                   onChanged: (mobileNumberTxt) {
@@ -125,7 +124,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 // }
                               },
                               child: const Text(
-                                'Log in',
+                                'LOG IN',
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontFamily: 'Poppins',

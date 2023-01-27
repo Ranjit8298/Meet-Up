@@ -69,7 +69,7 @@ class CheckedInScreen extends StatelessWidget {
                         ));
                       },
                       child: const Text(
-                        'Log In',
+                        'LOG IN',
                         style: TextStyle(
                             color: Colors.white,
                             fontFamily: 'Poppins',
@@ -95,7 +95,7 @@ class CheckedInScreen extends StatelessWidget {
                         ));
                       },
                       child: const Text(
-                        'Sign Up',
+                        'SIGN UP',
                         style: TextStyle(
                             color: Colors.white,
                             fontFamily: 'Poppins',

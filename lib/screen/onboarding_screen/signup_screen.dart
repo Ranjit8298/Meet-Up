@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:meet_up/screen/onboarding_screen/login_screen.dart';
+import 'package:meet_up/screen/onboarding_screen/otp_screen.dart';
 
 import '../../widgets/custom_textFormField.dart';
 
@@ -69,7 +71,6 @@ class _SignupScreenState extends State<SignupScreen> {
                       txtController: mobileNumberTxt,
                       keyboardType: TextInputType.number,
                       prefixIcon: const Icon(Icons.mobile_friendly),
-                      suffixOnTap: () {},
                       hintText: 'Enter Your Mobile Number',
                       labelText: 'Mobile Number',
                       onChanged: (mobileNumberTxt) {
@@ -103,9 +104,17 @@ class _SignupScreenState extends State<SignupScreen> {
                                     //     isValidForm = false;
                                     //   });
                                     // }
+
+                                    Navigator.push(context, MaterialPageRoute(
+                                      builder: (context) {
+                                        return OtpScreen(
+                                          mobileNumberTxt.text.toString(),
+                                        );
+                                      },
+                                    ));
                                   },
                                   child: const Text(
-                                    'Sign Up',
+                                    'GET OTP',
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontFamily: 'Poppins',
@@ -113,15 +122,24 @@ class _SignupScreenState extends State<SignupScreen> {
                                         fontSize: 18),
                                   )),
                             ),
-                            Container(
-                                margin: const EdgeInsets.only(left: 30),
-                                child: const Text(
-                                  'Already a member?',
-                                  style: TextStyle(
-                                      color: Colors.grey,
-                                      fontFamily: 'Poppins',
-                                      letterSpacing: 0.3),
-                                ))
+                            InkWell(
+                              onTap: () {
+                                Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) {
+                                    return const LoginScreen();
+                                  },
+                                ));
+                              },
+                              child: Container(
+                                  margin: const EdgeInsets.only(left: 30),
+                                  child: const Text(
+                                    'Already a member?',
+                                    style: TextStyle(
+                                        color: Colors.grey,
+                                        fontFamily: 'Poppins',
+                                        letterSpacing: 0.3),
+                                  )),
+                            )
                           ],
                         ),
                       ),

@@ -9,9 +9,7 @@ class CustomTextFormField extends StatelessWidget {
   final Widget prefixIcon;
   final String labelText;
   final TextInputType keyboardType;
-  final bool? password;
   final Widget? suffixIcon;
-  final Function? suffixOnTap;
 
   const CustomTextFormField({
     super.key,
@@ -22,9 +20,7 @@ class CustomTextFormField extends StatelessWidget {
     required this.prefixIcon,
     required this.labelText,
     required this.keyboardType,
-    this.password,
     this.suffixIcon,
-    this.suffixOnTap,
   });
 
   @override
