@@ -1,5 +1,7 @@
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:meet_up/screen/onboarding_screen/basic_information_screen.dart';
 import 'package:meet_up/widgets/custom_otp_box.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
@@ -89,6 +91,7 @@ class _OtpScreenState extends State<OtpScreen> {
                     child: PinCodeTextField(
                       length: 6,
                       obscureText: false,
+                      cursorColor: Colors.red,
                       keyboardType: TextInputType.number,
                       animationType: AnimationType.fade,
                       textStyle: const TextStyle(fontSize: 15),
@@ -129,7 +132,11 @@ class _OtpScreenState extends State<OtpScreen> {
                       height: 45,
                       margin: const EdgeInsets.only(top: 40),
                       child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) {
+                              return BasicInformationSCreen();
+                            },));
+                          },
                           child: const Text(
                             'VERIFY & PROCEED',
                             style: TextStyle(

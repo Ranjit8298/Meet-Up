@@ -38,13 +38,19 @@ dependencies:
   cupertino_icons: ^1.0.2
   lottie: ^2.2.0
   pin_code_fields: ^7.4.0
-  # flutter_native_splash: ^2.0.4
+  flutter_native_splash: ^2.0.4
+  intl: ^0.18.0
+  image_picker: ^0.7.2+1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_native_splash: ^2.0.4
+flutter_native_splash:
+  color: "#ffffff"
+  image: assets/images/icon.png
+  android: true
+  ios: true
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -98,9 +104,3 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
-
-flutter_native_splash:
-  color: "#FFFFFF"
-  image: assets/images/icon.png
-  android: true
-  ios: true
