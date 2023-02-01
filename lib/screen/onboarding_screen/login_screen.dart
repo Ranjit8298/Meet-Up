@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meet_up/screen/onboarding_screen/access_location_screen.dart';
 import 'package:meet_up/screen/onboarding_screen/signup_screen.dart';
 import 'package:meet_up/widgets/custom_textFormField.dart';
 
@@ -122,6 +123,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                 //     isValidForm = false;
                                 //   });
                                 // }
+                                Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) {
+                                    return AccessLocationScreen();
+                                  },
+                                ));
                               },
                               child: const Text(
                                 'LOG IN',
