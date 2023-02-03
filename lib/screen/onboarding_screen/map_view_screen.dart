@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:meet_up/screen/dashboard_screen/dashboard_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MapViewScreen extends StatefulWidget {
   final double? latitude, longitude;
@@ -48,49 +49,46 @@ class _MapViewScreenState extends State<MapViewScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: null,
-        body: widget.latitude != null
-            ? SafeArea(
-                left: true,
-                top: true,
-                right: true,
-                bottom: true,
-                child: Stack(
-                  children: <Widget>[
-                    GoogleMap(
-                      onMapCreated: _onMapCreated,
-                      myLocationEnabled: true,
-                      indoorViewEnabled: true,
-                      trafficEnabled: true,
-                      markers: getmarkers(),
-                      onCameraMove: _onCameraMove,
-                      initialCameraPosition: CameraPosition(
-                        target: LatLng(widget.latitude!, widget.longitude!),
-                        zoom: 17.0,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 15),
-                      child: Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Container(
-                              width: 150,
-                              child: ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.push(context, MaterialPageRoute(
-                                      builder: (context) {
-                                        return DashboardScreen(address: widget.currentAddress.toString());
-                                      },
-                                    ));
-                                  },
-                                  child: Text('NEXT')))),
-                    ),
-                  ],
+        body: SafeArea(
+          left: true,
+          top: true,
+          right: true,
+          bottom: true,
+          child: Stack(
+            children: <Widget>[
+              GoogleMap(
+                onMapCreated: _onMapCreated,
+                myLocationEnabled: true,
+                indoorViewEnabled: true,
+                trafficEnabled: true,
+                markers: getmarkers(),
+                onCameraMove: _onCameraMove,
+                initialCameraPosition: CameraPosition(
+                  target: LatLng(widget.latitude!, widget.longitude!),
+                  zoom: 17.0,
                 ),
-              )
-            : Center(
-              child: CircularProgressIndicator(
-                  color: Colors.red,
-                ),
-            ));
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 15),
+                child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                        width: 150,
+                        child: ElevatedButton(
+                            onPressed: () async {
+                              var prefs = await SharedPreferences.getInstance();
+                              prefs.setString(
+                                  'address', widget.currentAddress.toString());
+                              Navigator.push(context, MaterialPageRoute(
+                                builder: (context) {
+                                  return BottomTab();
+                                },
+                              ));
+                            },
+                            child: Text('NEXT')))),
+              ),
+            ],
+          ),
+        ));
   }
 }

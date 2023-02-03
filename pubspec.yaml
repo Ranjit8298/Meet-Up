@@ -50,6 +50,7 @@ dependencies:
   google_maps_flutter: ^2.2.3
   shared_preferences: ^2.0.17
   fluttertoast: ^8.1.2
+  qr_code_scanner: ^1.0.1
 
 dev_dependencies:
   flutter_test:
@@ -102,6 +103,9 @@ flutter:
     - family: Itim
       fonts:
         - asset: assets/fonts/Itim-Regular.ttf
+    - family: Roboto Mono
+      fonts:
+        - asset: assets/fonts/RobotoMono-Regular.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
   #

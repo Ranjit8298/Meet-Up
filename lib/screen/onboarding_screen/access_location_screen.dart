@@ -146,14 +146,23 @@ class _AccessLocationScreenState extends State<AccessLocationScreen> {
                     child: ElevatedButton(
                         onPressed: () {
                           _getCurrentPosition();
-                          Navigator.push(context, MaterialPageRoute(
-                            builder: (context) {
-                              return MapViewScreen(
-                                  latitude: _currentPosition?.latitude,
-                                  longitude: _currentPosition?.longitude,
-                                  currentAddress: _currentAddress);
-                            },
-                          ));
+
+                          if (_currentPosition?.latitude != null &&
+                              _currentPosition?.longitude != null) {
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (context) {
+                                return MapViewScreen(
+                                    latitude: _currentPosition?.latitude,
+                                    longitude: _currentPosition?.longitude,
+                                    currentAddress: _currentAddress);
+                              },
+                            ));
+                          } else {
+                            Center(
+                                child: CircularProgressIndicator(
+                              color: Colors.red,
+                            ));
+                          }
 
                           // var prefs = await SharedPreferences.getInstance();
                           // prefs.setString(
