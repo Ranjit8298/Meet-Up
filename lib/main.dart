@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meet_up/screen/onboarding_screen/login_screen.dart';
 import 'package:meet_up/screen/onboarding_screen/onboarding_screen.dart';
 
 void main() {
@@ -13,6 +14,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      routes: {
+        '/LoginScreen': (context) => LoginScreen(),
+      },
       title: 'Meet Up',
       theme: ThemeData(
         primarySwatch: Colors.red,

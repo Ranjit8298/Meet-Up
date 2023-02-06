@@ -126,14 +126,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
             appBar: AppBar(
               automaticallyImplyLeading: false,
               title: Container(
-                child: Text(
-                  address,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      letterSpacing: 0.3),
+                child: Tooltip(
+                  showDuration: Duration(seconds: 2),
+                  message: address,
+                  preferBelow: true,
+                  excludeFromSemantics: true,
+                  enableFeedback: true,
+                  triggerMode: TooltipTriggerMode.tap,
+                  child: Text(
+                    address,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: 0.3),
+                  ),
                 ),
               ),
               actions: <Widget>[

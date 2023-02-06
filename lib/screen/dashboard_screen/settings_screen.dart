@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:meet_up/screen/onboarding_screen/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -12,7 +14,7 @@ class _SettingScreenState extends State<SettingScreen> {
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
   bool isSwitch = false;
-  bool isSwitchB = false;
+  bool isSwitchB = true;
   @override
   void initState() {
     super.initState();
@@ -29,6 +31,31 @@ class _SettingScreenState extends State<SettingScreen> {
     return doSomeAsyncStuff().then((_user) {
       setState(() => address = address);
     });
+  }
+
+  logoutDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Logout'),
+        content: Text('Are you sure want to logout?'),
+        actions: [
+          Container(
+            margin: EdgeInsets.only(right: 20),
+            child: OutlinedButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text('No'),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, '/LoginScreen');
+            },
+            child: Text('Yes'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -111,21 +138,14 @@ class _SettingScreenState extends State<SettingScreen> {
                           icon: Icon(Icons.edit_rounded),
                           label: Text('Edit Profile')),
                     ),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Container(
-                          margin: EdgeInsets.only(top: 20, left: 10),
-                          child: Text(
-                            'GENERAL',
-                            style: TextStyle(color: Colors.black, fontSize: 15),
-                          )),
-                    ),
                     Container(
-                      height: 110,
-                      margin: EdgeInsets.only(top: 5),
+                      height: MediaQuery.of(context).size.height / 6,
+                      width: MediaQuery.of(context).size.width,
+                      margin: EdgeInsets.all(10),
                       padding: EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: Color(0xFFF2E5E5),
+                        color: Color(0xFFFCFFE7),
+                        borderRadius: BorderRadius.circular(10),
                         boxShadow: [
                           BoxShadow(
                             color: Colors.grey,
@@ -137,6 +157,65 @@ class _SettingScreenState extends State<SettingScreen> {
                       ),
                       child: Column(
                         children: [
+                          Text(
+                            "You're on our free plan",
+                            style: TextStyle(
+                                color: Color(0xFF00337C),
+                                fontSize: 19,
+                                letterSpacing: 0.3,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(top: 3),
+                            child: Text(
+                              "You want to make the most out of Hooked?",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Color(0xFF00337C),
+                                  fontSize: 16,
+                                  letterSpacing: 0.3,
+                                  fontWeight: FontWeight.w400),
+                            ),
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(top: 20),
+                            width: MediaQuery.of(context).size.width / 2,
+                            child: FilledButton(
+                              style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.blueGrey)),
+                                onPressed: () {},
+                                child: Text('Upgrade to PRO')),
+                          )
+                        ],
+                      ),
+                    ),
+                    Container(
+                      height: 140,
+                      margin: EdgeInsets.all(10),
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Color(0xFFF2E5E5),
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey,
+                            blurRadius: 20.0, // Soften the shaodw
+                            spreadRadius: 3.0,
+                            offset: Offset(0.0, 0.0),
+                          )
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Container(
+                                margin: EdgeInsets.only(bottom: 10),
+                                child: Text(
+                                  'GENERAL',
+                                  style: TextStyle(
+                                      color: Colors.blueGrey, fontSize: 15),
+                                )),
+                          ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -227,19 +306,11 @@ class _SettingScreenState extends State<SettingScreen> {
                         ],
                       ),
                     ),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Container(
-                          margin: EdgeInsets.only(top: 20, left: 10),
-                          child: Text(
-                            'PRIVACY',
-                            style: TextStyle(color: Colors.black, fontSize: 15),
-                          )),
-                    ),
                     Container(
-                      height: 120,
+                      height: 150,
                       decoration: BoxDecoration(
                         color: Color(0xFFF7F5EB),
+                        borderRadius: BorderRadius.circular(10),
                         boxShadow: [
                           BoxShadow(
                             color: Colors.grey,
@@ -249,10 +320,20 @@ class _SettingScreenState extends State<SettingScreen> {
                           )
                         ],
                       ),
-                      margin: EdgeInsets.only(top: 5),
+                      margin: EdgeInsets.all(10),
                       padding: EdgeInsets.all(10),
                       child: Column(
                         children: [
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Container(
+                                margin: EdgeInsets.only(bottom: 10),
+                                child: Text(
+                                  'PRIVACY',
+                                  style: TextStyle(
+                                      color: Colors.blueGrey, fontSize: 15),
+                                )),
+                          ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -312,11 +393,13 @@ class _SettingScreenState extends State<SettingScreen> {
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.only(top: 50),
+                      margin: EdgeInsets.only(top: 50, bottom: 10),
                       width: 335,
                       height: 45,
                       child: ElevatedButton.icon(
-                          onPressed: () {},
+                          onPressed: () {
+                            logoutDialog();
+                          },
                           icon: Icon(Icons.logout_rounded),
                           label: Text(
                             'LOGOUT',
