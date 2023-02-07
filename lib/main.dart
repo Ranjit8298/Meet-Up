@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meet_up/screen/dashboard_screen/mutual_like_screen.dart';
 import 'package:meet_up/screen/onboarding_screen/login_screen.dart';
 import 'package:meet_up/screen/onboarding_screen/onboarding_screen.dart';
 
@@ -16,10 +17,12 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routes: {
         '/LoginScreen': (context) => LoginScreen(),
+        '/MutualLikeScreen': (context) => MutualLikeScreen(),
       },
       title: 'Meet Up',
       theme: ThemeData(
         primarySwatch: Colors.red,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: const OnboardingScreen(),
     );

@@ -155,7 +155,10 @@ class _InvitationScreenState extends State<InvitationScreen> {
                                               MaterialStatePropertyAll<Color>(
                                                   Colors.green.shade900),
                                         ),
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          Navigator.pushNamed(
+                                              context, '/MutualLikeScreen');
+                                        },
                                         child: Text('Accept')),
                                   ],
                                 ),

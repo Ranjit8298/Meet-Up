@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:path_drawing/path_drawing.dart';
 import '../../widgets/curve_painter.dart';
 
 class BrowseScreen extends StatefulWidget {
@@ -12,6 +11,7 @@ class BrowseScreen extends StatefulWidget {
 
 class _BrowseScreenState extends State<BrowseScreen> {
   late String address = '';
+
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
   CarouselController buttonCarouselController = CarouselController();
@@ -32,6 +32,269 @@ class _BrowseScreenState extends State<BrowseScreen> {
     return doSomeAsyncStuff().then((address) {
       setState(() => address = address);
     });
+  }
+
+  _showSimpleModalDialog(context) {
+    var distance = 2;
+    double _startValue = 18.0;
+    double _endValue = 100.0;
+    bool male = false;
+    bool female = false;
+    bool everyone = false;
+
+    void maleSelect() {
+      if (male == false) {
+        male = true;
+        female = false;
+        everyone = false;
+      } else {
+        male = false;
+      }
+    }
+
+    void feMaleSelect() {
+      if (female == false) {
+        female = true;
+        male = false;
+        everyone = false;
+      } else {
+        female = false;
+      }
+    }
+
+    void everyoneSelect() {
+      if (everyone == false) {
+        male = false;
+        female = false;
+        everyone = true;
+      } else {
+        everyone = false;
+      }
+    }
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0)),
+            child: StatefulBuilder(
+              builder: (context, setState) {
+                return Container(
+                  height: 330,
+                  width: MediaQuery.of(context).size.width,
+                  // constraints: BoxConstraints(minHeight: 200),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Browse Filters',
+                          style: TextStyle(
+                              fontSize: 17,
+                              color: Colors.red,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.3),
+                        ),
+                        Container(
+                          height: 1,
+                          margin: EdgeInsets.only(top: 5),
+                          decoration: BoxDecoration(
+                              color: Colors.red.shade400,
+                              borderRadius: BorderRadius.circular(0.5)),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              margin: EdgeInsets.only(top: 15),
+                              child: Text(
+                                'Select Distance',
+                                style: TextStyle(
+                                    color: Color(0xFF0A2647),
+                                    fontSize: 16,
+                                    letterSpacing: 0.3,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            Text(
+                              '${distance} km',
+                              style: TextStyle(
+                                  color: Colors.red,
+                                  fontSize: 16,
+                                  letterSpacing: 0.3,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                        Slider(
+                          min: 2,
+                          max: 100,
+                          divisions: 100,
+                          label: '${distance.round()}',
+                          value: distance.toDouble(),
+                          onChanged: (value) {
+                            setState(() {
+                              distance = value.toInt();
+                              print(distance);
+                            });
+                          },
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              margin: EdgeInsets.only(top: 0),
+                              child: Text(
+                                'Select Age',
+                                style: TextStyle(
+                                    color: Color(0xFF0A2647),
+                                    fontSize: 16,
+                                    letterSpacing: 0.3,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            Text(
+                              '${_startValue.toInt()} - ${_endValue.toInt()}',
+                              style: TextStyle(
+                                  color: Colors.red,
+                                  fontSize: 16,
+                                  letterSpacing: 0.3,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                        RangeSlider(
+                          min: 18.0,
+                          max: 100.0,
+                          divisions: 100,
+                          labels: RangeLabels(
+                            _startValue.round().toString(),
+                            _endValue.round().toString(),
+                          ),
+                          values: RangeValues(_startValue, _endValue),
+                          onChanged: (values) {
+                            setState(() {
+                              _startValue = values.start;
+                              _endValue = values.end;
+                            });
+                          },
+                        ),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Container(
+                            margin: EdgeInsets.only(top: 0),
+                            child: Text(
+                              'Select Gender',
+                              style: TextStyle(
+                                  color: Color(0xFF0A2647),
+                                  fontSize: 16,
+                                  letterSpacing: 0.3,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(top: 8),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    maleSelect();
+                                  });
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(5.0),
+                                  width: 90,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15),
+                                      border: Border.all(
+                                          color: male == false
+                                              ? Colors.grey
+                                              : Colors.red)),
+                                  child: Center(
+                                      child: Text(
+                                    'Male',
+                                    style: TextStyle(
+                                        color: male == false
+                                            ? Colors.grey
+                                            : Colors.red),
+                                  )),
+                                ),
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    feMaleSelect();
+                                  });
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(5.0),
+                                  width: 90,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15),
+                                      border: Border.all(
+                                          color: female == false
+                                              ? Colors.grey
+                                              : Colors.red)),
+                                  child: Center(
+                                      child: Text(
+                                    'Female',
+                                    style: TextStyle(
+                                        color: female == false
+                                            ? Colors.grey
+                                            : Colors.red),
+                                  )),
+                                ),
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    everyoneSelect();
+                                  });
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(5.0),
+                                  width: 90,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15),
+                                      border: Border.all(
+                                          color: everyone == false
+                                              ? Colors.grey
+                                              : Colors.red)),
+                                  child: Center(
+                                      child: Text(
+                                    'Everyone',
+                                    style: TextStyle(
+                                        color: everyone == false
+                                            ? Colors.grey
+                                            : Colors.red),
+                                  )),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          width: 290,
+                          margin: EdgeInsets.only(top: 20),
+                          child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text('SUBMIT')),
+                        )
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        });
   }
 
   @override
@@ -60,8 +323,10 @@ class _BrowseScreenState extends State<BrowseScreen> {
               onPressed: () {},
             ),
             IconButton(
-              icon: Icon(Icons.message_rounded),
-              onPressed: () {},
+              icon: Icon(Icons.filter_alt_rounded),
+              onPressed: () {
+                _showSimpleModalDialog(context);
+              },
             ),
           ],
         ),
@@ -92,8 +357,7 @@ class _BrowseScreenState extends State<BrowseScreen> {
                     return Container(
                       width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.height,
-                      // padding: EdgeInsets.all(10),
-
+                      padding: EdgeInsets.all(10),
                       decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.only(
@@ -104,44 +368,118 @@ class _BrowseScreenState extends State<BrowseScreen> {
                         children: [
                           Stack(
                             children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width,
-                                height: 308,
-                                margin: EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                    color: Colors.red.shade200,
-                                    borderRadius: BorderRadius.circular(15)),
+                              Center(
+                                child: Container(
+                                  width: 300,
+                                  height: 410,
+                                  margin: EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      border:
+                                          Border.all(color: Color(0xFFD3D3D3)),
+                                      borderRadius: BorderRadius.circular(15)),
+                                ),
                               ),
-                              Container(
-                                padding: EdgeInsets.all(10),
-                                child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(15),
-                                    child: Image(
-                                        fit: BoxFit.cover,
-                                        height: 300,
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        image: NetworkImage(
-                                            '${userData[index]['location_image']}'))),
+                              Center(
+                                child: Container(
+                                  width: 340,
+                                  height: 400,
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      border:
+                                          Border.all(color: Color(0xFFD3D3D3)),
+                                      borderRadius: BorderRadius.circular(15)),
+                                  // padding: EdgeInsets.all(10),
+                                  child: Column(
+                                    children: [
+                                      Center(
+                                        child: ClipRRect(
+                                            borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(15),
+                                                topRight: Radius.circular(15)),
+                                            child: Image(
+                                                fit: BoxFit.cover,
+                                                height: 290,
+                                                image: NetworkImage(
+                                                    '${userData[index]['location_image']}'))),
+                                      ),
+                                      Container(
+                                        padding: EdgeInsets.all(10),
+                                        margin: EdgeInsets.only(top: 10),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Text(
+                                                      '${userData[index]['location_name']}, ',
+                                                      textAlign: TextAlign.left,
+                                                      style: TextStyle(
+                                                          color:
+                                                              Color(0xFF13005A),
+                                                          fontSize: 18,
+                                                          letterSpacing: 0.3,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                    Text(
+                                                      '21',
+                                                      textAlign: TextAlign.left,
+                                                      style: TextStyle(
+                                                          color:
+                                                              Color(0xFF13005A),
+                                                          fontSize: 18,
+                                                          letterSpacing: 0.3,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Text(
+                                                  'Lives in Dehradun',
+                                                  textAlign: TextAlign.left,
+                                                  style: TextStyle(
+                                                      color: Colors.grey),
+                                                ),
+                                                Text(
+                                                  'UI UX Designer',
+                                                  textAlign: TextAlign.left,
+                                                  style: TextStyle(
+                                                      color: Colors.grey),
+                                                ),
+                                                Text(
+                                                  '3 mutual friends',
+                                                  textAlign: TextAlign.left,
+                                                  style: TextStyle(
+                                                      color: Colors.grey),
+                                                ),
+                                              ],
+                                            ),
+                                            InkWell(
+                                                onTap: () {},
+                                                child: Icon(
+                                                  Icons.info_outline,
+                                                  color: Colors.grey,
+                                                ))
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               )
                             ],
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(top: 10),
-                            child: Text(
-                              '${userData[index]['location_name']}',
-                              style: TextStyle(
-                                  color: Color(0xFF13005A),
-                                  fontSize: 20,
-                                  letterSpacing: 0.3,
-                                  fontWeight: FontWeight.w400),
-                            ),
                           ),
                           Stack(
                             children: [
                               Container(
                                 width: MediaQuery.of(context).size.width,
-                                height: 200,
+                                height: 150,
                                 child: CustomPaint(
                                   painter: CurvePainter(),
                                 ),
@@ -154,16 +492,16 @@ class _BrowseScreenState extends State<BrowseScreen> {
                                         curve: Curves.linear);
                                   },
                                   child: Container(
-                                    width: 80,
-                                    height: 80,
-                                    margin: EdgeInsets.only(top: 32),
+                                    width: 60,
+                                    height: 60,
+                                    margin: EdgeInsets.only(top: 24),
                                     decoration: BoxDecoration(
                                         color: Colors.red,
                                         borderRadius:
-                                            BorderRadius.circular(40)),
+                                            BorderRadius.circular(30)),
                                     child: Icon(
                                       Icons.add_rounded,
-                                      size: 60,
+                                      size: 50,
                                       color: Colors.white,
                                     ),
                                   ),
@@ -173,7 +511,7 @@ class _BrowseScreenState extends State<BrowseScreen> {
                           ),
                           Container(
                             padding:
-                                EdgeInsets.only(left: 50, right: 50, bottom: 5),
+                                EdgeInsets.only(left: 60, right: 60, bottom: 15),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -184,16 +522,16 @@ class _BrowseScreenState extends State<BrowseScreen> {
                                         curve: Curves.linear);
                                   },
                                   child: Container(
-                                    width: 70,
-                                    height: 70,
+                                    width: 50,
+                                    height: 50,
                                     // margin: EdgeInsets.only(top: 32),
                                     decoration: BoxDecoration(
                                         color: Color(0xFF13005A),
                                         borderRadius:
-                                            BorderRadius.circular(35)),
+                                            BorderRadius.circular(25)),
                                     child: Icon(
                                       Icons.star_rounded,
-                                      size: 60,
+                                      size: 40,
                                       color: Colors.white,
                                     ),
                                   ),
@@ -205,16 +543,16 @@ class _BrowseScreenState extends State<BrowseScreen> {
                                         curve: Curves.linear);
                                   },
                                   child: Container(
-                                    width: 70,
-                                    height: 70,
+                                    width: 50,
+                                    height: 50,
                                     // margin: EdgeInsets.only(top: 32),
                                     decoration: BoxDecoration(
                                         color: Colors.grey,
                                         borderRadius:
-                                            BorderRadius.circular(35)),
+                                            BorderRadius.circular(25)),
                                     child: Icon(
                                       Icons.cancel_rounded,
-                                      size: 60,
+                                      size: 40,
                                       color: Colors.white,
                                     ),
                                   ),
@@ -249,13 +587,6 @@ class _BrowseScreenState extends State<BrowseScreen> {
           'https://media.istockphoto.com/id/119926339/photo/resort-swimming-pool.jpg?s=612x612&w=0&k=20&c=9QtwJC2boq3GFHaeDsKytF4-CavYKQuy1jBD2IRfYKc='
     },
     {
-      'location_id': '3',
-      'location_name': 'Kingford Hotel',
-      'location_user_count': '18 User Live',
-      'location_image':
-          'https://media-cdn.tripadvisor.com/media/photo-s/22/25/ce/ea/kingsford-hotel-manila.jpg'
-    },
-    {
       'location_id': '4',
       'location_name': 'Taj Hotel',
       'location_user_count': '06 User Live',
@@ -275,13 +606,6 @@ class _BrowseScreenState extends State<BrowseScreen> {
       'location_user_count': '35 User Live',
       'location_image':
           'https://media.istockphoto.com/id/119926339/photo/resort-swimming-pool.jpg?s=612x612&w=0&k=20&c=9QtwJC2boq3GFHaeDsKytF4-CavYKQuy1jBD2IRfYKc='
-    },
-    {
-      'location_id': '7',
-      'location_name': 'Doon Bar',
-      'location_user_count': '05 User Live',
-      'location_image':
-          'https://media-cdn.tripadvisor.com/media/photo-s/22/25/ce/ea/kingsford-hotel-manila.jpg'
     },
     {
       'location_id': '8',
