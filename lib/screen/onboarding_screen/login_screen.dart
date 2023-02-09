@@ -87,11 +87,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   txtController: passwordTxt,
                   keyboardType: TextInputType.visiblePassword,
                   prefixIcon: const Icon(Icons.password_rounded),
-                  suffixIcon: isPass == true
-                      ? Icon(Icons.visibility_off_rounded)
-                      : Icon(Icons.visibility),
                   hintText: 'Enter Your Password',
                   labelText: 'Password',
+                  obscureText: true,
                   onChanged: (passwordTxt) {
                     print(passwordTxt);
                   },

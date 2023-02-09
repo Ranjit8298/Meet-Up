@@ -9,9 +9,9 @@ class CustomTextFormField extends StatelessWidget {
   final Widget prefixIcon;
   final String labelText;
   final TextInputType keyboardType;
-  final Widget? suffixIcon;
+  bool? obscureText;
 
-  const CustomTextFormField({
+  CustomTextFormField({
     super.key,
     required this.txtController,
     required this.onChanged,
@@ -20,7 +20,7 @@ class CustomTextFormField extends StatelessWidget {
     required this.prefixIcon,
     required this.labelText,
     required this.keyboardType,
-    this.suffixIcon,
+    this.obscureText,
   });
 
   @override
@@ -32,6 +32,7 @@ class CustomTextFormField extends StatelessWidget {
         controller: txtController,
         enableSuggestions: true,
         autocorrect: true,
+        obscureText: obscureText ?? false,
         validator: validator(txtController),
         onChanged: onChanged(txtController),
         style: const TextStyle(
@@ -42,7 +43,6 @@ class CustomTextFormField extends StatelessWidget {
           focusColor: Colors.red,
           //add prefix icon
           prefixIcon: prefixIcon,
-          suffixIcon: suffixIcon,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0),
           ),

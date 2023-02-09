@@ -5,9 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:meet_up/screen/onboarding_screen/map_view_screen.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:location/location.dart';
-// import 'package:permission_handler/permission_handler.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:meet_up/widgets/custom_header.dart';
 
 class AccessLocationScreen extends StatefulWidget {
   @override
@@ -124,7 +123,7 @@ class _AccessLocationScreenState extends State<AccessLocationScreen> {
                           fontSize: 22,
                           letterSpacing: 0.3,
                           fontFamily: 'Poppins',
-                          color: Colors.blue.shade900),
+                          color: Color(0xFF3D1766)),
                     ),
                   ),
                   Container(
@@ -136,50 +135,78 @@ class _AccessLocationScreenState extends State<AccessLocationScreen> {
                           fontSize: 14,
                           letterSpacing: 0.3,
                           fontFamily: 'Poppins',
-                          color: Colors.blue.shade900),
+                          color: Color(0xFF3D1766)),
                     ),
                   ),
-                  Container(
-                    width: 335,
-                    height: 45,
-                    margin: const EdgeInsets.only(top: 60, bottom: 10),
-                    child: ElevatedButton(
-                        onPressed: () {
-                          _getCurrentPosition();
-
-                          if (_currentPosition?.latitude != null &&
-                              _currentPosition?.longitude != null) {
-                            Navigator.push(context, MaterialPageRoute(
-                              builder: (context) {
-                                return MapViewScreen(
-                                    latitude: _currentPosition?.latitude,
-                                    longitude: _currentPosition?.longitude,
-                                    currentAddress: _currentAddress);
+                  (_currentPosition?.latitude != null &&
+                          _currentPosition?.longitude != null)
+                      ? Container(
+                          width: 335,
+                          height: 45,
+                          margin: const EdgeInsets.only(top: 60, bottom: 10),
+                          child: ElevatedButton(
+                              onPressed: () {
+                                setState(() {
+                                  _getCurrentPosition();
+                                });
+                                if (_currentPosition?.latitude != null &&
+                                    _currentPosition?.longitude != null) {
+                                  Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) {
+                                      return MapViewScreen(
+                                          latitude: _currentPosition?.latitude,
+                                          longitude:
+                                              _currentPosition?.longitude,
+                                          currentAddress: _currentAddress);
+                                    },
+                                  ));
+                                } else {
+                                  Center(
+                                      child: CircularProgressIndicator(
+                                    color: Colors.red,
+                                  ));
+                                }
                               },
-                            ));
-                          } else {
-                            Center(
-                                child: CircularProgressIndicator(
-                              color: Colors.red,
-                            ));
-                          }
-
-                          // var prefs = await SharedPreferences.getInstance();
-                          // prefs.setString(
-                          //     'latitude', _currentPosition?.latitude as String);
-                          // prefs.setString('longitude',
-                          //     _currentPosition?.longitude as String);
-                          // prefs.setString('currentAddress', _currentAddress!);
-                        },
-                        child: const Text(
-                          'ACCESS LOCATION',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: 'Poppins',
-                              letterSpacing: 0.4,
-                              fontSize: 16),
-                        )),
-                  ),
+                              child: const Text(
+                                'ACCESS LOCATION',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: 'Poppins',
+                                    letterSpacing: 0.4,
+                                    fontSize: 16),
+                              )),
+                        )
+                      : Column(
+                          children: [
+                            Container(
+                              margin: EdgeInsets.only(top: 30),
+                              child: Text(
+                                'Please refresh for getting current location',
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.merriweather(
+                                    color: Color(0xFF3D1766), fontSize: 16),
+                              ),
+                            ),
+                            Container(
+                                margin: EdgeInsets.only(top: 10),
+                                child: CircularProgressIndicator()),
+                            Container(
+                              width: 335,
+                              height: 45,
+                              margin: EdgeInsets.only(top: 30),
+                              child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Color(0xFF3D1766),
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _getCurrentPosition();
+                                    });
+                                  },
+                                  child: Text('REFRESH')),
+                            ),
+                          ],
+                        ),
                 ],
               ),
             )),

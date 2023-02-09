@@ -139,7 +139,7 @@ class _SettingScreenState extends State<SettingScreen> {
                           label: Text('Edit Profile')),
                     ),
                     Container(
-                      height: MediaQuery.of(context).size.height / 6,
+                      height: 135,
                       width: MediaQuery.of(context).size.width,
                       margin: EdgeInsets.all(10),
                       padding: EdgeInsets.all(10),

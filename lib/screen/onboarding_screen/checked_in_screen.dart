@@ -84,7 +84,7 @@ class CheckedInScreen extends StatelessWidget {
                   margin: const EdgeInsets.only(top: 30, bottom: 10),
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue.shade900,
+                      backgroundColor: Color(0xFF3D1766),
                     ),
                       onPressed: () {
                         Navigator.push(context, MaterialPageRoute(

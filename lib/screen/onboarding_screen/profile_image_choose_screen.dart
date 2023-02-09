@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:meet_up/screen/onboarding_screen/access_location_screen.dart';
-import 'package:meet_up/screen/onboarding_screen/login_screen.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ProfileImageChooseScreen extends StatefulWidget {
   @override
@@ -171,20 +171,20 @@ class _ProfileImageChooseScreenState extends State<ProfileImageChooseScreen> {
                           children: [
                             Text(
                               'Take a Selfie',
-                              style: TextStyle(
-                                  color: Colors.blue.shade900,
-                                  letterSpacing: 0.3,
-                                  fontSize: 20,
-                                  fontFamily: 'Poppins'),
+                              style: GoogleFonts.merriweather(
+                                color: Color(0xFF3D1766),
+                                letterSpacing: 0.3,
+                                fontSize: 20,
+                              ),
                             ),
                             Text(
                               'Show us how you look and get more chances to meet people!',
                               textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: Colors.blue.shade900,
-                                  letterSpacing: 0.3,
-                                  fontSize: 16,
-                                  fontFamily: 'Itim'),
+                              style: GoogleFonts.merriweather(
+                                color: Color(0xFF3D1766),
+                                letterSpacing: 0.3,
+                                fontSize: 16,
+                              ),
                             ),
                             Container(
                               width: 260,
@@ -208,18 +208,19 @@ class _ProfileImageChooseScreenState extends State<ProfileImageChooseScreen> {
                               onTap: () {},
                               child: Text(
                                 'OR',
-                                style: TextStyle(
-                                    color: Colors.blue.shade900,
-                                    letterSpacing: 0.3,
-                                    fontSize: 16,
-                                    fontFamily: 'Poppins'),
+                                style: GoogleFonts.merriweather(
+                                  color: Color(0xFF3D1766),
+                                  letterSpacing: 0.3,
+                                  fontSize: 16,
+                                ),
                               ),
                             ),
                             Container(
                               width: 260,
                               height: 45,
-                              margin:
-                                  const EdgeInsets.only(top: 20,),
+                              margin: const EdgeInsets.only(
+                                top: 20,
+                              ),
                               child: ElevatedButton(
                                   onPressed: () {
                                     getImageFromGallery();

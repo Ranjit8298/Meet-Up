@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:meet_up/screen/onboarding_screen/checked_in_screen.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({super.key});
@@ -37,17 +38,16 @@ class OnboardingScreen extends StatelessWidget {
                     margin: const EdgeInsets.only(top: 60),
                     child: Lottie.asset('assets/row/hello.json'),
                   ),
-                   Center(
+                  Center(
                     child: Container(
                       margin: const EdgeInsets.only(top: 20),
-                      child: const Text(
+                      child: Text(
                         textAlign: TextAlign.center,
                         "“That's the ideal meeting...once upon a time, only once, unexpectedly, then never again.”",
-                        style: TextStyle(
-                            color:Color(0xFF850000),
-                            fontFamily: 'Poppins',
+                        style: GoogleFonts.merriweather(
+                            color: Color(0xFF850000),
                             letterSpacing: 0.3,
-                            fontSize: 16),
+                            fontSize: 18),
                       ),
                     ),
                   ),

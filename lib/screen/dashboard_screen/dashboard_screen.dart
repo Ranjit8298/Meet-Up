@@ -3,12 +3,15 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:meet_up/model/dashboard_user_model.dart';
 import 'package:meet_up/screen/dashboard_screen/browse_screen.dart';
 import 'package:meet_up/screen/dashboard_screen/invitations_screen.dart';
 import 'package:meet_up/screen/dashboard_screen/matches_user_screen.dart';
 import 'package:meet_up/screen/dashboard_screen/messages_screen.dart';
 import 'package:meet_up/screen/dashboard_screen/qr_scanner_screen.dart';
 import 'package:meet_up/screen/dashboard_screen/settings_screen.dart';
+import 'package:meet_up/widgets/custom_header.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class BottomTab extends StatefulWidget {
@@ -90,6 +93,42 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
   }
 
+  static List<DashboardUserModel> main_dashboardUserList = [
+    DashboardUserModel('Social Hangout', '15 User Live',
+        'https://www.euttaranchal.com/hotels/photos/lemon-tree-hotel-dehradun-1779387.jpg'),
+    DashboardUserModel('Chef Restaurant', '10 User Live',
+        'https://media.istockphoto.com/id/119926339/photo/resort-swimming-pool.jpg?s=612x612&w=0&k=20&c=9QtwJC2boq3GFHaeDsKytF4-CavYKQuy1jBD2IRfYKc='),
+    DashboardUserModel('Kingford Hotel', '18 User Live',
+        'https://media-cdn.tripadvisor.com/media/photo-s/22/25/ce/ea/kingsford-hotel-manila.jpg'),
+    DashboardUserModel('Taj Hotel', '06 User Live',
+        'https://thumbs.dreamstime.com/b/hotel-lobby-luxury-staircases-fountain-39479289.jpg'),
+    DashboardUserModel('Namsate Bharat', '25 User Live',
+        'https://media.gettyimages.com/id/1333257932/photo/digitally-generated-image-of-the-luxurious-hotel-lobby.jpg?s=612x612&w=gi&k=20&c=7VWO0GX3BhfpPJW9BNnaMWEbCHZqfBNq--ccjw2Z8mk='),
+    DashboardUserModel('Greenfield Hotel', '35 User Live',
+        'https://media.istockphoto.com/id/119926339/photo/resort-swimming-pool.jpg?s=612x612&w=0&k=20&c=9QtwJC2boq3GFHaeDsKytF4-CavYKQuy1jBD2IRfYKc='),
+    DashboardUserModel('Doon Bar', '05 User Live',
+        'https://media-cdn.tripadvisor.com/media/photo-s/22/25/ce/ea/kingsford-hotel-manila.jpg'),
+    DashboardUserModel('Poppins Hangout', '16 User Live',
+        'https://thumbs.dreamstime.com/b/hotel-lobby-luxury-staircases-fountain-39479289.jpg'),
+    DashboardUserModel('Chai Sutta Bar', '10 User Live',
+        'https://media.gettyimages.com/id/1333257932/photo/digitally-generated-image-of-the-luxurious-hotel-lobby.jpg?s=612x612&w=gi&k=20&c=7VWO0GX3BhfpPJW9BNnaMWEbCHZqfBNq--ccjw2Z8mk='),
+    DashboardUserModel('Roboto Hangout', '15 User Live',
+        'https://media.istockphoto.com/id/119926339/photo/resort-swimming-pool.jpg?s=612x612&w=0&k=20&c=9QtwJC2boq3GFHaeDsKytF4-CavYKQuy1jBD2IRfYKc='),
+  ];
+
+  List<DashboardUserModel> display_dashboardUserList =
+      List.from(main_dashboardUserList);
+
+  void updateList(String value) {
+    setState(() {
+      display_dashboardUserList = main_dashboardUserList
+          .where((element) => element.location_name!
+              .toLowerCase()
+              .contains(value.toLowerCase()))
+          .toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Future<bool> showExitPopup() async {
@@ -123,6 +162,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           onWillPop: showExitPopup,
           child: Scaffold(
             resizeToAvoidBottomInset: false,
+            // backgroundColor: Colors.white,
             appBar: AppBar(
               automaticallyImplyLeading: false,
               title: Container(
@@ -182,6 +222,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   bottom: true,
                   child: Column(
                     children: [
+                      IconButton(
+                        icon: Icon(Icons.qr_code_scanner_rounded),
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (context) {
+                              return QrScannerScreen();
+                            },
+                          ));
+                        },
+                      ),
                       Container(
                         // margin: EdgeInsets.all(10),
                         color: Color(0xFFF7EFE5),
@@ -189,6 +239,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         child: TextField(
                           controller: searchTxt,
                           maxLines: 1,
+                          onChanged: (value) {
+                            updateList(value);
+                          },
                           decoration: InputDecoration(
                             labelText: 'Search by Location',
                             hintText: 'Search by Location',
@@ -205,71 +258,104 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                       // seprator(),
                       Expanded(
-                        child: Container(
-                          margin: EdgeInsets.all(10),
-                          child: GridView.builder(
-                            shrinkWrap: true,
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2,
-                                    crossAxisSpacing: 40,
-                                    mainAxisSpacing: 10),
-                            itemBuilder: (context, index) {
-                              return InkWell(
-                                onTap: () {
-                                  Navigator.push(context, MaterialPageRoute(
-                                    builder: (context) {
-                                      return MatchesUserScreen(
-                                          locationName: userData[index]
-                                              ['location_name'],
-                                          userCount: userData[index]
-                                              ['location_user_count']);
-                                    },
-                                  ));
-                                },
+                        child: display_dashboardUserList.length == 0
+                            ? Center(
                                 child: Container(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                          width: 170,
-                                          height: 120,
-                                          child: Image(
-                                              fit: BoxFit.cover,
-                                              image: NetworkImage(
-                                                  '${userData[index]['location_image']}'))),
-                                      Container(
-                                        margin: EdgeInsets.only(top: 3),
-                                        child: Text(
-                                          '${userData[index]['location_name']}',
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              color: Color(0xFF3D1766),
-                                              fontSize: 16,
-                                              letterSpacing: 0.3),
-                                        ),
+                                padding: EdgeInsets.all(10),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      child: Image(
+                                          fit: BoxFit.cover,
+                                          filterQuality: FilterQuality.high,
+                                          image: new AssetImage(
+                                              'assets/images/no_result.png')),
+                                    ),
+                                    Container(
+                                      child: Text(
+                                        'No Result Found',
+                                        style: GoogleFonts.merriweather(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                            letterSpacing: 0.3,
+                                            color: Color(0xFF3D1766)),
                                       ),
-                                      Container(
-                                        margin: EdgeInsets.only(top: 0),
-                                        child: Text(
-                                          '${userData[index]['location_user_count']}',
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              color: Colors.red,
-                                              fontSize: 14,
-                                              letterSpacing: 0.3),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                    )
+                                  ],
                                 ),
-                              );
-                            },
-                            itemCount: userData.length,
-                          ),
-                        ),
+                              ))
+                            : Container(
+                                margin: EdgeInsets.all(10),
+                                child: GridView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: display_dashboardUserList.length,
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 2,
+                                          crossAxisSpacing: 40,
+                                          mainAxisSpacing: 10),
+                                  itemBuilder: (context, index) {
+                                    return InkWell(
+                                      onTap: () {
+                                        Navigator.push(context,
+                                            MaterialPageRoute(
+                                          builder: (context) {
+                                            return MatchesUserScreen(
+                                                locationName:
+                                                    display_dashboardUserList[
+                                                            index]
+                                                        .location_name,
+                                                userCount:
+                                                    display_dashboardUserList[
+                                                            index]
+                                                        .location_user_count);
+                                          },
+                                        ));
+                                      },
+                                      child: Container(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Container(
+                                                width: 170,
+                                                height: 120,
+                                                child: Image(
+                                                    fit: BoxFit.cover,
+                                                    image: NetworkImage(
+                                                        '${display_dashboardUserList[index].location_image}'))),
+                                            Container(
+                                              margin: EdgeInsets.only(top: 3),
+                                              child: Text(
+                                                '${display_dashboardUserList[index].location_name}',
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                    color: Color(0xFF3D1766),
+                                                    fontSize: 16,
+                                                    letterSpacing: 0.3),
+                                              ),
+                                            ),
+                                            Container(
+                                              margin: EdgeInsets.only(top: 0),
+                                              child: Text(
+                                                '${display_dashboardUserList[index].location_user_count}',
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                    color: Colors.red,
+                                                    fontSize: 14,
+                                                    letterSpacing: 0.3),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
                       )
                     ],
                   )),
@@ -277,77 +363,4 @@ class _DashboardScreenState extends State<DashboardScreen> {
           )),
     );
   }
-
-  var userData = [
-    {
-      'location_id': '1',
-      'location_name': 'Social Hangout',
-      'location_user_count': '15 User Live',
-      'location_image':
-          'https://www.euttaranchal.com/hotels/photos/lemon-tree-hotel-dehradun-1779387.jpg'
-    },
-    {
-      'location_id': '2',
-      'location_name': 'Chef Restaurant',
-      'location_user_count': '10 User Live',
-      'location_image':
-          'https://media.istockphoto.com/id/119926339/photo/resort-swimming-pool.jpg?s=612x612&w=0&k=20&c=9QtwJC2boq3GFHaeDsKytF4-CavYKQuy1jBD2IRfYKc='
-    },
-    {
-      'location_id': '3',
-      'location_name': 'Kingford Hotel',
-      'location_user_count': '18 User Live',
-      'location_image':
-          'https://media-cdn.tripadvisor.com/media/photo-s/22/25/ce/ea/kingsford-hotel-manila.jpg'
-    },
-    {
-      'location_id': '4',
-      'location_name': 'Taj Hotel',
-      'location_user_count': '06 User Live',
-      'location_image':
-          'https://thumbs.dreamstime.com/b/hotel-lobby-luxury-staircases-fountain-39479289.jpg'
-    },
-    {
-      'location_id': '5',
-      'location_name': 'Namsate Bharat',
-      'location_user_count': '25 User Live',
-      'location_image':
-          'https://media.gettyimages.com/id/1333257932/photo/digitally-generated-image-of-the-luxurious-hotel-lobby.jpg?s=612x612&w=gi&k=20&c=7VWO0GX3BhfpPJW9BNnaMWEbCHZqfBNq--ccjw2Z8mk='
-    },
-    {
-      'location_id': '6',
-      'location_name': 'Greenfield Hotel',
-      'location_user_count': '35 User Live',
-      'location_image':
-          'https://media.istockphoto.com/id/119926339/photo/resort-swimming-pool.jpg?s=612x612&w=0&k=20&c=9QtwJC2boq3GFHaeDsKytF4-CavYKQuy1jBD2IRfYKc='
-    },
-    {
-      'location_id': '7',
-      'location_name': 'Doon Bar',
-      'location_user_count': '05 User Live',
-      'location_image':
-          'https://media-cdn.tripadvisor.com/media/photo-s/22/25/ce/ea/kingsford-hotel-manila.jpg'
-    },
-    {
-      'location_id': '8',
-      'location_name': 'Poppins Hangout',
-      'location_user_count': '16 User Live',
-      'location_image':
-          'https://thumbs.dreamstime.com/b/hotel-lobby-luxury-staircases-fountain-39479289.jpg'
-    },
-    {
-      'location_id': '9',
-      'location_name': 'Chai Sutta Bar',
-      'location_user_count': '10 User Live',
-      'location_image':
-          'https://media.gettyimages.com/id/1333257932/photo/digitally-generated-image-of-the-luxurious-hotel-lobby.jpg?s=612x612&w=gi&k=20&c=7VWO0GX3BhfpPJW9BNnaMWEbCHZqfBNq--ccjw2Z8mk='
-    },
-    {
-      'location_id': '10',
-      'location_name': 'Roboto Hangout',
-      'location_user_count': '15 User Live',
-      'location_image':
-          'https://media.istockphoto.com/id/119926339/photo/resort-swimming-pool.jpg?s=612x612&w=0&k=20&c=9QtwJC2boq3GFHaeDsKytF4-CavYKQuy1jBD2IRfYKc='
-    },
-  ];
 }
