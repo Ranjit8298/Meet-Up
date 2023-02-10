@@ -33,6 +33,7 @@ class CustomTextFormField extends StatelessWidget {
         enableSuggestions: true,
         autocorrect: true,
         obscureText: obscureText ?? false,
+        obscuringCharacter: '*',
         validator: validator(txtController),
         onChanged: onChanged(txtController),
         style: const TextStyle(

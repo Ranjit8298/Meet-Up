@@ -222,16 +222,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   bottom: true,
                   child: Column(
                     children: [
-                      IconButton(
-                        icon: Icon(Icons.qr_code_scanner_rounded),
-                        onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(
-                            builder: (context) {
-                              return QrScannerScreen();
-                            },
-                          ));
-                        },
-                      ),
                       Container(
                         // margin: EdgeInsets.all(10),
                         color: Color(0xFFF7EFE5),

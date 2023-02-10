@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:meet_up/model/message_model.dart';
+import 'package:meet_up/screen/dashboard_screen/chat_screen.dart';
 import 'package:meet_up/widgets/custom_textFormField.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -167,73 +168,90 @@ class _MessageScreenState extends State<MessageScreen> {
                             shrinkWrap: true,
                             itemCount: display_message_list.length,
                             itemBuilder: (context, index) {
-                              return Container(
-                                width: MediaQuery.of(context).size.width,
-                                child: ListTile(
-                                  leading: CircleAvatar(
-                                    radius: 30,
-                                    backgroundImage: AssetImage(
-                                        '${display_message_list[index].location_image}'),
-                                  ),
-                                  title: Row(
-                                    children: [
-                                      Text(
-                                        '${display_message_list[index].location_name}',
-                                        style: GoogleFonts.merriweather(
-                                            color: Color(0xFF3D1766),
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 15),
-                                      ),
-                                      display_message_list[index]
-                                                  .message_count !=
-                                              '00'
-                                          ? Container(
-                                              width: 25,
-                                              height: 25,
-                                              margin: EdgeInsets.only(left: 10),
-                                              decoration: BoxDecoration(
-                                                  color: Colors.red,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          12.5)),
-                                              child: Center(
-                                                  child: Text(
-                                                      '${display_message_list[index].message_count}',
-                                                      style: GoogleFonts
-                                                          .merriweather(
-                                                              fontSize: 13.5,
-                                                              color:
-                                                                  Colors.white,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              letterSpacing:
-                                                                  0.3))),
-                                            )
-                                          : SizedBox()
-                                    ],
-                                  ),
-                                  subtitle: Text(
-                                    '${display_message_list[index].location_user_count}',
-                                    maxLines: 1,
-                                    softWrap: false,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: GoogleFonts.merriweather(
-                                        color: Colors.grey),
-                                  ),
-                                  trailing: display_message_list[index]
-                                              .isOnline !=
-                                          true
-                                      ? Text(
-                                          '${display_message_list[index].user_last_online}')
-                                      : Container(
-                                          width: 12,
-                                          height: 12,
-                                          decoration: BoxDecoration(
-                                              color: Colors.green.shade900,
-                                              borderRadius:
-                                                  BorderRadius.circular(6)),
+                              return InkWell(
+                                onTap: () {
+                                  Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) {
+                                      return ChatScreen(
+                                        userName: display_message_list[index]
+                                            .location_name
+                                            .toString(),
+                                        userImg: display_message_list[index]
+                                            .location_image
+                                            .toString(),
+                                      );
+                                    },
+                                  ));
+                                },
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  child: ListTile(
+                                    leading: CircleAvatar(
+                                      radius: 30,
+                                      backgroundImage: AssetImage(
+                                          '${display_message_list[index].location_image}'),
+                                    ),
+                                    title: Row(
+                                      children: [
+                                        Text(
+                                          '${display_message_list[index].location_name}',
+                                          style: GoogleFonts.merriweather(
+                                              color: Color(0xFF3D1766),
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 15),
                                         ),
+                                        display_message_list[index]
+                                                    .message_count !=
+                                                '00'
+                                            ? Container(
+                                                width: 25,
+                                                height: 25,
+                                                margin:
+                                                    EdgeInsets.only(left: 10),
+                                                decoration: BoxDecoration(
+                                                    color: Colors.red,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            12.5)),
+                                                child: Center(
+                                                    child: Text(
+                                                        '${display_message_list[index].message_count}',
+                                                        style: GoogleFonts
+                                                            .merriweather(
+                                                                fontSize: 13.5,
+                                                                color: Colors
+                                                                    .white,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                letterSpacing:
+                                                                    0.3))),
+                                              )
+                                            : SizedBox()
+                                      ],
+                                    ),
+                                    subtitle: Text(
+                                      '${display_message_list[index].location_user_count}',
+                                      maxLines: 1,
+                                      softWrap: false,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: GoogleFonts.merriweather(
+                                          color: Colors.grey),
+                                    ),
+                                    trailing: display_message_list[index]
+                                                .isOnline !=
+                                            true
+                                        ? Text(
+                                            '${display_message_list[index].user_last_online}')
+                                        : Container(
+                                            width: 12,
+                                            height: 12,
+                                            decoration: BoxDecoration(
+                                                color: Colors.green.shade900,
+                                                borderRadius:
+                                                    BorderRadius.circular(6)),
+                                          ),
+                                  ),
                                 ),
                               );
                             },

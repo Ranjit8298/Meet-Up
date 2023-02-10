@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:meet_up/screen/onboarding_screen/access_location_screen.dart';
 import 'package:meet_up/screen/onboarding_screen/signup_screen.dart';
 import 'package:meet_up/widgets/custom_textFormField.dart';
@@ -89,7 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   prefixIcon: const Icon(Icons.password_rounded),
                   hintText: 'Enter Your Password',
                   labelText: 'Password',
-                  obscureText: true,
+                  obscureText: isPass,
                   onChanged: (passwordTxt) {
                     print(passwordTxt);
                   },
@@ -99,6 +100,38 @@ class _LoginScreenState extends State<LoginScreen> {
                     }
                     return null;
                   },
+                ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Container(
+                    margin: EdgeInsets.only(right: 10, top: 5),
+                    child: InkWell(
+                      onTap: () {
+                        setState(() {
+                          if (isPass == true) {
+                            isPass = false;
+                          } else {
+                            isPass = true;
+                          }
+                        });
+                      },
+                      child: isPass == true
+                          ? Text(
+                              'SHOW',
+                              style: GoogleFonts.merriweather(
+                                  color: Color(0xFF13005A),
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 0.3),
+                            )
+                          : Text(
+                              'HIDE',
+                              style: GoogleFonts.merriweather(
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 0.3),
+                            ),
+                    ),
+                  ),
                 ),
                 Center(
                   child: Container(
