@@ -10,6 +10,9 @@ class CustomTextFormField extends StatelessWidget {
   final String labelText;
   final TextInputType keyboardType;
   bool? obscureText;
+  int? maxLength;
+  TextInputAction? textInputAction;
+
 
   CustomTextFormField({
     super.key,
@@ -21,6 +24,8 @@ class CustomTextFormField extends StatelessWidget {
     required this.labelText,
     required this.keyboardType,
     this.obscureText,
+    this.maxLength,
+    this.textInputAction,
   });
 
   @override
@@ -34,15 +39,17 @@ class CustomTextFormField extends StatelessWidget {
         autocorrect: true,
         obscureText: obscureText ?? false,
         obscuringCharacter: '*',
-        validator: validator(txtController),
+        validator: (value) => validator(value),
         onChanged: onChanged(txtController),
+        maxLength: maxLength,
+        textInputAction:textInputAction,
         style: const TextStyle(
           fontSize: 15.5,
           color: Colors.black,
         ),
         decoration: InputDecoration(
           focusColor: Colors.red,
-          //add prefix icon
+          counterText: '',
           prefixIcon: prefixIcon,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0),

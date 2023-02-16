@@ -1,9 +1,8 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:meet_up/screen/onboarding_screen/basic_information_screen.dart';
-import 'package:meet_up/widgets/custom_otp_box.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class OtpScreen extends StatefulWidget {
   // const OtpScreen({super.key});
@@ -18,6 +17,7 @@ class OtpScreen extends StatefulWidget {
 class _OtpScreenState extends State<OtpScreen> {
   TextEditingController textEditingController = TextEditingController();
   String currentText = "";
+  bool isError = false;
 
   @override
   Widget build(BuildContext context) {
@@ -27,13 +27,6 @@ class _OtpScreenState extends State<OtpScreen> {
       body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
-        decoration: BoxDecoration(
-            gradient: LinearGradient(colors: [
-          Colors.white,
-          Colors.white24,
-          Colors.blue.shade50,
-          Colors.red.shade300
-        ], begin: FractionalOffset(1.0, 0.0), end: FractionalOffset(0.0, 1.0))),
         padding: const EdgeInsets.all(10),
         child: SafeArea(
             left: true,
@@ -127,6 +120,15 @@ class _OtpScreenState extends State<OtpScreen> {
                       appContext: context,
                     ),
                   ),
+                  isError == true
+                      ? Container(
+                          margin: EdgeInsets.only(left: 10),
+                          child: Text(
+                            'Please enter correct OTP',
+                            style: TextStyle(color: Colors.red, fontSize: 16),
+                          ),
+                        )
+                      : SizedBox(),
                   Center(
                     child: Container(
                       width: 335,
@@ -134,9 +136,18 @@ class _OtpScreenState extends State<OtpScreen> {
                       margin: const EdgeInsets.only(top: 40),
                       child: ElevatedButton(
                           onPressed: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) {
-                              return BasicInformationSCreen();
-                            },));
+                            setState(() {
+                              if (currentText.length < 6) {
+                                isError = true;
+                              } else {
+                                isError = false;
+                                Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) {
+                                    return BasicInformationSCreen();
+                                  },
+                                ));
+                              }
+                            });
                           },
                           child: const Text(
                             'VERIFY & PROCEED',

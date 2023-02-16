@@ -43,15 +43,29 @@ class _MatchesUserScreenState extends State<MatchesUserScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Color(0xFFE9E8E8),
+        automaticallyImplyLeading: false,
         title: widget.isQrCode != true
             ? Text.rich(
                 TextSpan(
                   children: [
-                    TextSpan(text: '${widget.locationName}'),
+                    TextSpan(
+                        text: '${widget.locationName}',
+                        style: GoogleFonts.merriweather(
+                            color: Color(0xFF3D1766),
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 0.3)),
                     TextSpan(
                         text: ' (${widget.userCount})',
-                        style: TextStyle(fontSize: 16)),
+                        style: GoogleFonts.merriweather(
+                            color: Colors.black,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 0.3)),
                   ],
                 ),
               )
@@ -60,14 +74,6 @@ class _MatchesUserScreenState extends State<MatchesUserScreen> {
       body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
-        decoration: BoxDecoration(
-            gradient: LinearGradient(colors: [
-          Color(0xFFF7EFE5),
-          Colors.white,
-          Colors.white24,
-          Colors.blue.shade50,
-          Colors.red.shade100
-        ], begin: FractionalOffset(1.0, 0.0), end: FractionalOffset(0.0, 1.0))),
         child: SafeArea(
             left: true,
             top: true,
@@ -77,7 +83,7 @@ class _MatchesUserScreenState extends State<MatchesUserScreen> {
               children: [
                 Container(
                   // margin: EdgeInsets.all(10),
-                  color: Color(0xFFF7EFE5),
+                  // color: Color(0xFFF7EFE5),
                   padding: EdgeInsets.all(10),
                   child: TextField(
                     controller: searchTxt,
@@ -169,11 +175,11 @@ class _MatchesUserScreenState extends State<MatchesUserScreen> {
                                             decoration: BoxDecoration(
                                               borderRadius:
                                                   BorderRadius.circular(12.5),
-                                              color: Colors.white,
+                                              color: Colors.red,
                                             ),
                                             child: Icon(
                                               Icons.close_rounded,
-                                              color: Colors.red,
+                                              color: Colors.white,
                                               size: 25,
                                             ),
                                           ),

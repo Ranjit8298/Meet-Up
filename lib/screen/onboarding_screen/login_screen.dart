@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:meet_up/screen/onboarding_screen/access_location_screen.dart';
 import 'package:meet_up/screen/onboarding_screen/signup_screen.dart';
@@ -6,7 +7,6 @@ import 'package:meet_up/widgets/custom_textFormField.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
-
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
@@ -27,14 +27,6 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
-        // color: Colors.white,
-        decoration: BoxDecoration(
-            gradient: LinearGradient(colors: [
-          Colors.white,
-          Colors.white24,
-          Colors.blue.shade50,
-          Colors.red.shade300
-        ], begin: FractionalOffset(1.0, 0.0), end: FractionalOffset(0.0, 1.0))),
         padding: const EdgeInsets.all(10),
         child: SafeArea(
           left: true,
@@ -74,31 +66,41 @@ class _LoginScreenState extends State<LoginScreen> {
                   prefixIcon: const Icon(Icons.mobile_friendly),
                   hintText: 'Enter Your Mobile Number',
                   labelText: 'Mobile Number',
+                  maxLength: 10,
+                  textInputAction: TextInputAction.next,
                   onChanged: (mobileNumberTxt) {
                     print(mobileNumberTxt);
                   },
-                  validator: (mobileNumberTxt) {
-                    if (mobileNumberTxt.toString().isEmpty) {
-                      return 'Please enter phone number';
+                  validator: (value) {
+                    if (value!.toString().trim().isEmpty) {
+                      return 'Please enter mobile number';
+                    } else if (!RegExp(r'(^(?:[+0]9)?[0-9]{10,12}$)')
+                        .hasMatch(value)) {
+                      return 'Please enter correct mobile number';
+                    } else {
+                      return null;
                     }
-                    return null;
                   },
                 ),
                 CustomTextFormField(
                   txtController: passwordTxt,
-                  keyboardType: TextInputType.visiblePassword,
+                  keyboardType: TextInputType.number,
                   prefixIcon: const Icon(Icons.password_rounded),
                   hintText: 'Enter Your Password',
                   labelText: 'Password',
                   obscureText: isPass,
+                  textInputAction: TextInputAction.done,
                   onChanged: (passwordTxt) {
                     print(passwordTxt);
                   },
-                  validator: (passwordTxt) {
-                    if (passwordTxt.toString().isEmpty) {
+                  validator: (value) {
+                    if (value!.toString().trim().isEmpty) {
                       return 'Please enter password';
+                    } else if (value.toString().length <= 4) {
+                      return 'Please enter at least 4 digits number';
+                    } else {
+                      return null;
                     }
-                    return null;
                   },
                 ),
                 Align(
@@ -145,20 +147,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           height: 45,
                           child: ElevatedButton(
                               onPressed: () {
-                                // if (_formKey.currentState!.validate()) {
-                                //   setState(() {
-                                //     isValidForm = true;
-                                //   });
-                                // } else {
-                                //   setState(() {
-                                //     isValidForm = false;
-                                //   });
-                                // }
-                                Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) {
-                                    return AccessLocationScreen();
-                                  },
-                                ));
+                                if (_formKey.currentState!.validate()) {
+                                  Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) {
+                                      return AccessLocationScreen();
+                                    },
+                                  ));
+                                }
                               },
                               child: const Text(
                                 'LOG IN',

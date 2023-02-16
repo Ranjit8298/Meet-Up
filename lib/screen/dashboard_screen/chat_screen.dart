@@ -15,6 +15,7 @@ import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:bubble/bubble.dart';
+import 'dart:io' show Platform;
 
 class ChatScreen extends StatefulWidget {
   // const ChatScreen({super.key});
@@ -46,11 +47,10 @@ class _ChatScreenState extends State<ChatScreen> {
       Bubble(
         child: child,
         showNip: true,
-        stick: true,
+        // stick: true,
+        // margin: BubbleEdges.only(top: 10, right: 40),
         padding: BubbleEdges.all(0),
-        margin: BubbleEdges.all(0),
-        nipHeight: 8.0,
-        nipWidth: 8.0,
+        // alignment: Alignment.topLeft,
         color: _user.id != message.author.id ||
                 message.type == types.MessageType.image
             ? const Color(0xfff5f5f7)
@@ -61,46 +61,102 @@ class _ChatScreenState extends State<ChatScreen> {
         nip: nextMessageInGroup
             ? BubbleNip.no
             : _user.id != message.author.id
-                ? BubbleNip.leftBottom
-                : BubbleNip.rightBottom,
+                ? BubbleNip.leftTop
+                : BubbleNip.rightTop,
       );
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.red,
-        title: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(widget.userName),
-            Text(
-              'online',
-              style: TextStyle(fontSize: 14, color: Colors.white),
-            ),
-          ],
-        ),
-      ),
+      // resizeToAvoidBottomInset: false,
+      appBar: null,
       body: Container(
-        child: Chat(
-          isAttachmentUploading: false,
-          l10n: const ChatL10nEn(
-            inputPlaceholder: 'Type a message....',
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: SafeArea(
+          left: true,
+          right: true,
+          top: true,
+          bottom: true,
+          child: Container(
+            child: Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.all(8),
+                  width: MediaQuery.of(context).size.width,
+                  height: 55,
+                  color: Color(0xFFE9E8E8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      IconButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          icon: Platform.isAndroid
+                              ? Icon(
+                                  Icons.arrow_back,
+                                )
+                              : Icon(
+                                  Icons.arrow_back_ios_new_rounded,
+                                )),
+                      Container(
+                        margin: EdgeInsets.only(left: 5),
+                        child: CircleAvatar(
+                          backgroundColor: Colors.grey,
+                          child: CircleAvatar(
+                            backgroundImage: AssetImage(widget.userImg),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(left: 10),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.userName,
+                              style: GoogleFonts.merriweather(
+                                  color: Color(0xFF3D1766),
+                                  fontSize: 16,
+                                  letterSpacing: 0.3,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              'Online',
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Chat(
+                    isAttachmentUploading: false,
+                    l10n: const ChatL10nEn(
+                      inputPlaceholder: 'Type a message....',
+                    ),
+                    theme: const DefaultChatTheme(
+                        inputBackgroundColor: Color(0xFFD3D3D3),
+                        inputBorderRadius: BorderRadius.zero,
+                        inputPadding: EdgeInsets.all(15),
+                        inputTextColor: Color(0xFF3D1766)),
+                    messages: _messages,
+                    onAttachmentPressed: _handleAttachmentPressed,
+                    onMessageTap: _handleMessageTap,
+                    onPreviewDataFetched: _handlePreviewDataFetched,
+                    onSendPressed: _handleSendPressed,
+                    bubbleBuilder: _bubbleBuilder,
+                    showUserAvatars: true,
+                    showUserNames: true,
+                    user: _user,
+                  ),
+                ),
+              ],
+            ),
           ),
-          theme: const DefaultChatTheme(
-              inputBackgroundColor: Color(0xFFD3D3D3),
-              inputBorderRadius: BorderRadius.zero,
-              inputPadding: EdgeInsets.all(15),
-              inputTextColor: Color(0xFF3D1766)),
-          messages: _messages,
-          onAttachmentPressed: _handleAttachmentPressed,
-          onMessageTap: _handleMessageTap,
-          onPreviewDataFetched: _handlePreviewDataFetched,
-          onSendPressed: _handleSendPressed,
-          bubbleBuilder: _bubbleBuilder,
-          showUserAvatars: true,
-          showUserNames: true,
-          user: _user,
         ),
       ));
 
@@ -113,12 +169,17 @@ class _ChatScreenState extends State<ChatScreen> {
   void _handleAttachmentPressed() {
     showModalBottomSheet<void>(
       context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(15.0),
+        ),
+      ),
       builder: (BuildContext context) => SafeArea(
         child: Container(
           height: 220,
-          padding: EdgeInsets.all(10),
+          padding: EdgeInsets.all(5),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -132,7 +193,10 @@ class _ChatScreenState extends State<ChatScreen> {
                     onPressed: () => Navigator.pop(context),
                     child: const Align(
                       alignment: AlignmentDirectional.centerStart,
-                      child: Text('Cancel'),
+                      child: Icon(
+                        Icons.cancel,
+                        size: 28,
+                      ),
                     ),
                   ),
                 ],
@@ -168,7 +232,7 @@ class _ChatScreenState extends State<ChatScreen> {
               Row(
                 children: [
                   Icon(
-                    Icons.image,
+                    Icons.photo_camera,
                     color: Color(0xFF13005A),
                   ),
                   TextButton(
@@ -352,7 +416,7 @@ class _ChatScreenState extends State<ChatScreen> {
   void _handleSendPressed(types.PartialText message) {
     final textMessage = types.TextMessage(
       author: _user,
-      createdAt: DateTime.now().microsecondsSinceEpoch,
+      createdAt: DateTime.now().millisecondsSinceEpoch,
       id: const Uuid().v4(),
       text: message.text,
     );

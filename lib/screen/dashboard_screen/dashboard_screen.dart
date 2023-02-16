@@ -9,7 +9,6 @@ import 'package:meet_up/screen/dashboard_screen/browse_screen.dart';
 import 'package:meet_up/screen/dashboard_screen/invitations_screen.dart';
 import 'package:meet_up/screen/dashboard_screen/matches_user_screen.dart';
 import 'package:meet_up/screen/dashboard_screen/messages_screen.dart';
-import 'package:meet_up/screen/dashboard_screen/qr_scanner_screen.dart';
 import 'package:meet_up/screen/dashboard_screen/settings_screen.dart';
 import 'package:meet_up/widgets/custom_header.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -39,7 +38,6 @@ class _BottomTabState extends State<BottomTab> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: null,
       body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
@@ -48,11 +46,11 @@ class _BottomTabState extends State<BottomTab> {
                 icon: Icon(Icons.group_rounded), label: 'Browse'),
             BottomNavigationBarItem(
                 icon: Icon(Icons.insert_invitation_rounded),
-                label: 'Invitation'),
+                label: 'Invitations'),
             BottomNavigationBarItem(
                 icon: Icon(Icons.message_rounded), label: 'Message'),
             BottomNavigationBarItem(
-                icon: Icon(Icons.settings_rounded), label: 'Setting'),
+                icon: Icon(Icons.settings_rounded), label: 'Settings'),
           ],
           currentIndex: _selectedIndex,
           selectedItemColor: Colors.red,
@@ -162,58 +160,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
           onWillPop: showExitPopup,
           child: Scaffold(
             resizeToAvoidBottomInset: false,
-            // backgroundColor: Colors.white,
-            appBar: AppBar(
-              automaticallyImplyLeading: false,
-              title: Container(
-                child: Tooltip(
-                  showDuration: Duration(seconds: 2),
-                  message: address,
-                  preferBelow: true,
-                  excludeFromSemantics: true,
-                  enableFeedback: true,
-                  triggerMode: TooltipTriggerMode.tap,
-                  child: Text(
-                    address,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        letterSpacing: 0.3),
-                  ),
-                ),
-              ),
-              actions: <Widget>[
-                IconButton(
-                  icon: Icon(Icons.qr_code_scanner_rounded),
-                  onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(
-                      builder: (context) {
-                        return QrScannerScreen();
-                      },
-                    ));
-                  },
-                ),
-                IconButton(
-                  icon: Icon(Icons.message_rounded),
-                  onPressed: () {},
-                ),
-              ],
-            ),
             body: Container(
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      colors: [
-                    Colors.white,
-                    Colors.white24,
-                    Colors.blue.shade50,
-                    Colors.red.shade100
-                  ],
-                      begin: FractionalOffset(1.0, 0.0),
-                      end: FractionalOffset(0.0, 1.0))),
               // padding: const EdgeInsets.all(10),
               child: SafeArea(
                   left: true,
@@ -223,8 +172,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   child: Column(
                     children: [
                       Container(
+                        child: CustomHeader(
+                          headerTxt: address,
+                          isMessageIcon: true,
+                        ),
+                      ),
+                      Container(
                         // margin: EdgeInsets.all(10),
-                        color: Color(0xFFF7EFE5),
+                        // color: Color(0xFFF7EFE5),
                         padding: EdgeInsets.all(10),
                         child: TextField(
                           controller: searchTxt,
@@ -233,8 +188,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             updateList(value);
                           },
                           decoration: InputDecoration(
-                            labelText: 'Search by Location',
-                            hintText: 'Search by Location',
+                            labelText: 'Search by Place Name',
+                            hintText: 'Search by Place Name',
                             isDense: true,
                             prefixIcon: Icon(Icons.search_rounded),
                             contentPadding:

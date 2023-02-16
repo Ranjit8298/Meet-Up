@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:meet_up/screen/dashboard_screen/browse_screen.dart';
+import 'package:meet_up/screen/dashboard_screen/dashboard_screen.dart';
+import 'package:meet_up/screen/dashboard_screen/favorite_screen.dart';
+import 'package:meet_up/screen/dashboard_screen/invitations_screen.dart';
+import 'package:meet_up/screen/dashboard_screen/messages_screen.dart';
 import 'package:meet_up/screen/dashboard_screen/mutual_like_screen.dart';
+import 'package:meet_up/screen/dashboard_screen/qr_scanner_screen.dart';
+import 'package:meet_up/screen/dashboard_screen/settings_screen.dart';
 import 'package:meet_up/screen/onboarding_screen/login_screen.dart';
 import 'package:meet_up/screen/onboarding_screen/onboarding_screen.dart';
 
@@ -18,6 +25,13 @@ class MyApp extends StatelessWidget {
       routes: {
         '/LoginScreen': (context) => LoginScreen(),
         '/MutualLikeScreen': (context) => MutualLikeScreen(),
+        '/QrScannerScreen': (context) => QrScannerScreen(),
+        '/MessageScreen': (context) => MessageScreen(),
+        '/DashboardScreen': (context) => DashboardScreen(),
+        '/BrowseScreen': (context) => BrowseScreen(),
+        '/InvitationScreen': (context) => InvitationScreen(),
+        '/SettingScreen': (context) => SettingScreen(),
+        '/FavoriteScreen': (context) => FavoriteScreen(),
       },
       title: 'Meet Up',
       theme: ThemeData(

@@ -26,13 +26,6 @@ class _SignupScreenState extends State<SignupScreen> {
       body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
-        decoration: BoxDecoration(
-            gradient: LinearGradient(colors: [
-          Colors.white,
-          Colors.white24,
-          Colors.blue.shade50,
-          Colors.red.shade300
-        ], begin: FractionalOffset(1.0, 0.0), end: FractionalOffset(0.0, 1.0))),
         padding: const EdgeInsets.all(10),
         child: SafeArea(
             left: true,
@@ -70,17 +63,22 @@ class _SignupScreenState extends State<SignupScreen> {
                     CustomTextFormField(
                       txtController: mobileNumberTxt,
                       keyboardType: TextInputType.number,
+                      maxLength: 10,
                       prefixIcon: const Icon(Icons.mobile_friendly),
                       hintText: 'Enter Your Mobile Number',
                       labelText: 'Mobile Number',
                       onChanged: (mobileNumberTxt) {
                         print(mobileNumberTxt);
                       },
-                      validator: (mobileNumberTxt) {
-                        if (mobileNumberTxt.toString().isEmpty) {
-                          return 'Please enter phone number';
+                      validator: (value) {
+                        if (value!.toString().trim().isEmpty) {
+                          return 'Please enter mobile number';
+                        } else if (!RegExp(r'(^(?:[+0]9)?[0-9]{10,12}$)')
+                            .hasMatch(value)) {
+                          return 'Please enter correct mobile number';
+                        } else {
+                          return null;
                         }
-                        return null;
                       },
                     ),
                     Center(
@@ -95,23 +93,15 @@ class _SignupScreenState extends State<SignupScreen> {
                               height: 45,
                               child: ElevatedButton(
                                   onPressed: () {
-                                    // if (_formKey.currentState!.validate()) {
-                                    //   setState(() {
-                                    //     isValidForm = true;
-                                    //   });
-                                    // } else {
-                                    //   setState(() {
-                                    //     isValidForm = false;
-                                    //   });
-                                    // }
-
-                                    Navigator.push(context, MaterialPageRoute(
-                                      builder: (context) {
-                                        return OtpScreen(
-                                          mobileNumberTxt.text.toString(),
-                                        );
-                                      },
-                                    ));
+                                    if (_formKey.currentState!.validate()) {
+                                      Navigator.push(context, MaterialPageRoute(
+                                        builder: (context) {
+                                          return OtpScreen(
+                                            mobileNumberTxt.text.toString(),
+                                          );
+                                        },
+                                      ));
+                                    }
                                   },
                                   child: const Text(
                                     'GET OTP',

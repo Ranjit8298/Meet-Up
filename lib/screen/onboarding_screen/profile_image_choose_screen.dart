@@ -54,13 +54,6 @@ class _ProfileImageChooseScreenState extends State<ProfileImageChooseScreen> {
       body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
-        decoration: BoxDecoration(
-            gradient: LinearGradient(colors: [
-          Colors.white,
-          Colors.white24,
-          Colors.blue.shade50,
-          Colors.red.shade300
-        ], begin: FractionalOffset(1.0, 0.0), end: FractionalOffset(0.0, 1.0))),
         padding: const EdgeInsets.all(10),
         child: SafeArea(
             left: true,
@@ -91,15 +84,16 @@ class _ProfileImageChooseScreenState extends State<ProfileImageChooseScreen> {
                       height: 150,
                       margin: const EdgeInsets.only(top: 120),
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            colors: [
-                              Colors.white,
-                              Colors.purple.shade50,
-                              Colors.blue.shade50,
-                              Colors.red.shade50
-                            ],
-                            begin: FractionalOffset(1.0, 0.0),
-                            end: FractionalOffset(0.0, 1.0)),
+                        color: Colors.white,
+                        // gradient: LinearGradient(
+                        //     colors: [
+                        //       Colors.white,
+                        //       Colors.purple.shade50,
+                        //       Colors.blue.shade50,
+                        //       Colors.red.shade50
+                        //     ],
+                        //     begin: FractionalOffset(1.0, 0.0),
+                        //     end: FractionalOffset(0.0, 1.0)),
                         borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(20),
                             bottomRight: Radius.circular(20)),

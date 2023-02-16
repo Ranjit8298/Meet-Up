@@ -14,13 +14,13 @@ class CheckedInScreen extends StatelessWidget {
       body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
-        decoration: BoxDecoration(
-            gradient: LinearGradient(colors: [
-          Colors.blue.shade200,
-          Colors.white,
-          Colors.white70,
-          Colors.black
-        ], begin: FractionalOffset(1.0, 0.0), end: FractionalOffset(0.0, 1.0))),
+        // decoration: BoxDecoration(
+        //     gradient: LinearGradient(colors: [
+        //   Colors.blue.shade200,
+        //   Colors.white,
+        //   Colors.white70,
+        //   Colors.black
+        // ], begin: FractionalOffset(1.0, 0.0), end: FractionalOffset(0.0, 1.0))),
         child: SingleChildScrollView(
           child: SafeArea(
             bottom: true,

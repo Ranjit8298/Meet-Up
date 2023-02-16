@@ -16,13 +16,13 @@ class OnboardingScreen extends StatelessWidget {
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-            gradient: LinearGradient(colors: [
-          Colors.white,
-          Colors.white,
-          Colors.white,
-          Colors.red.shade100
-        ], begin: FractionalOffset(1.0, 0.0), end: FractionalOffset(0.0, 1.0))),
+        // decoration: BoxDecoration(
+        //     gradient: LinearGradient(colors: [
+        //   Colors.white,
+        //   Colors.white,
+        //   Colors.white,
+        //   Colors.red.shade100
+        // ], begin: FractionalOffset(1.0, 0.0), end: FractionalOffset(0.0, 1.0))),
         child: SingleChildScrollView(
           child: SafeArea(
               bottom: true,

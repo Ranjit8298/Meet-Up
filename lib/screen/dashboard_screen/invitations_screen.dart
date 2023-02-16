@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:meet_up/widgets/custom_header.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class InvitationScreen extends StatefulWidget {
@@ -37,42 +39,34 @@ class _InvitationScreenState extends State<InvitationScreen> {
       onRefresh: _refresh,
       child: Scaffold(
         appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Color(0xFFE9E8E8),
           automaticallyImplyLeading: false,
           title: Container(
             child: Text(
-              address,
+              'Invitations',
               textAlign: TextAlign.center,
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
+              style: GoogleFonts.merriweather(
+                  color: Color(0xFF3D1766),
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
                   letterSpacing: 0.3),
             ),
           ),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.qr_code_scanner_rounded),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: Icon(Icons.message_rounded),
-              onPressed: () {},
-            ),
-          ],
+          // actions: <Widget>[
+          //   IconButton(
+          //     icon: Icon(Icons.qr_code_scanner_rounded),
+          //     onPressed: () {},
+          //   ),
+          //   IconButton(
+          //     icon: Icon(Icons.message_rounded),
+          //     onPressed: () {},
+          //   ),
+          // ],
         ),
         body: Container(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  colors: [
-                Colors.white,
-                Colors.white24,
-                Colors.blue.shade50,
-                Colors.red.shade100
-              ],
-                  begin: FractionalOffset(1.0, 0.0),
-                  end: FractionalOffset(0.0, 1.0))),
           // padding: EdgeInsets.all(10),
           child: SafeArea(
               left: true,
@@ -146,6 +140,11 @@ class _InvitationScreenState extends State<InvitationScreen> {
                                     Container(
                                       margin: EdgeInsets.only(right: 10),
                                       child: FilledButton(
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStatePropertyAll<Color>(
+                                                    Colors.blueGrey),
+                                          ),
                                           onPressed: () {},
                                           child: Text('Reject')),
                                     ),
@@ -153,7 +152,7 @@ class _InvitationScreenState extends State<InvitationScreen> {
                                         style: ButtonStyle(
                                           backgroundColor:
                                               MaterialStatePropertyAll<Color>(
-                                                  Colors.green.shade900),
+                                                  Colors.green.shade700),
                                         ),
                                         onPressed: () {
                                           Navigator.pushNamed(

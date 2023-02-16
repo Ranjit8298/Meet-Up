@@ -1,7 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:meet_up/screen/dashboard_screen/edit_profile_screen.dart';
+import 'package:meet_up/screen/dashboard_screen/notifications_screen.dart';
 import 'package:meet_up/screen/onboarding_screen/login_screen.dart';
+import 'package:meet_up/widgets/custom_header.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -33,27 +37,107 @@ class _SettingScreenState extends State<SettingScreen> {
     });
   }
 
+  signOut() async {
+    Navigator.pushReplacement(context, MaterialPageRoute(
+      builder: (context) {
+        return const LoginScreen();
+      },
+    ));
+  }
+
   logoutDialog() {
-    showDialog(
+    showModalBottomSheet<void>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Logout'),
-        content: Text('Are you sure want to logout?'),
-        actions: [
-          Container(
-            margin: EdgeInsets.only(right: 20),
-            child: OutlinedButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text('No'),
-            ),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(15.0),
+        ),
+      ),
+      builder: (BuildContext context) => SafeArea(
+        child: Container(
+          height: 250,
+          padding: EdgeInsets.all(5),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            // mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Align(
+                alignment: Alignment.centerRight,
+                child: IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: Icon(Icons.cancel, size: 28, color: Colors.red),
+                ),
+              ),
+              Center(
+                child: Container(
+                  width: 70,
+                  height: 70,
+                  decoration: BoxDecoration(
+                      color: Color(0xFFD3D3D3),
+                      borderRadius: BorderRadius.circular(35)),
+                  child: Icon(
+                    Icons.logout_rounded,
+                    color: Colors.red,
+                    size: 45,
+                  ),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(top: 8),
+                child: Text(
+                  'Are you sure want to logout?',
+                  style: GoogleFonts.merriweather(
+                      color: Color(0xFF3D1766),
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 0.3),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(top: 30),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 150,
+                      margin: EdgeInsets.only(right: 10),
+                      child: FilledButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xFFD3D3D3),
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            'No',
+                            style: GoogleFonts.merriweather(
+                                color: Color(0xFF3D1766),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 0.3),
+                          )),
+                    ),
+                    Container(
+                      width: 150,
+                      child: FilledButton(
+                          onPressed: () {
+                            signOut();
+                          },
+                          child: Text(
+                            'Yes',
+                            style: GoogleFonts.merriweather(
+                                color: Color(0xFFFFFFFF),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 0.3),
+                          )),
+                    ),
+                  ],
+                ),
+              )
+            ],
           ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pushReplacementNamed(context, '/LoginScreen');
-            },
-            child: Text('Yes'),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -65,43 +149,63 @@ class _SettingScreenState extends State<SettingScreen> {
       onRefresh: _refresh,
       child: Scaffold(
         appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Color(0xFFE9E8E8),
           automaticallyImplyLeading: false,
           title: Container(
             child: Text(
-              address,
+              'Settings',
               textAlign: TextAlign.center,
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
+              style: GoogleFonts.merriweather(
+                  color: Color(0xFF3D1766),
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
                   letterSpacing: 0.3),
             ),
           ),
           actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.qr_code_scanner_rounded),
-              onPressed: () {},
+            Stack(
+              children: [
+                IconButton(
+                  icon: Icon(
+                    Icons.notifications,
+                    color: Colors.black,
+                  ),
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context) {
+                        return NotificationsScreen();
+                      },
+                    ));
+                  },
+                ),
+                Container(
+                  width: 20,
+                  height: 20,
+                  margin: EdgeInsets.only(left: 10, top: 3),
+                  padding: EdgeInsets.all(3),
+                  decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(10)),
+                  child: Center(
+                      child: Text('03',
+                          style: GoogleFonts.merriweather(
+                              fontSize: 9.5,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.3))),
+                ),
+              ],
             ),
-            IconButton(
-              icon: Icon(Icons.message_rounded),
-              onPressed: () {},
-            ),
+            // IconButton(
+            //   icon: Icon(Icons.message_rounded),
+            //   onPressed: () {},
+            // ),
           ],
         ),
         body: Container(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  colors: [
-                Colors.red.shade100,
-                Colors.white,
-                Colors.white24,
-                Colors.blue.shade50,
-                Colors.red.shade100
-              ],
-                  begin: FractionalOffset(1.0, 0.0),
-                  end: FractionalOffset(0.0, 1.0))),
           // padding: const EdgeInsets.all(10),
           child: SafeArea(
               left: true,
@@ -133,10 +237,16 @@ class _SettingScreenState extends State<SettingScreen> {
                     Container(
                       width: 150,
                       margin: EdgeInsets.only(top: 10),
-                      child: FilledButton.icon(
-                          onPressed: () {},
-                          icon: Icon(Icons.edit_rounded),
-                          label: Text('Edit Profile')),
+                      child: FilledButton(
+                          onPressed: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) {
+                              return EditProfileScreen();
+                            },));
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blueGrey,
+                          ),
+                          child: Text('Edit Profile')),
                     ),
                     Container(
                       height: 135,
@@ -181,7 +291,9 @@ class _SettingScreenState extends State<SettingScreen> {
                             margin: EdgeInsets.only(top: 20),
                             width: MediaQuery.of(context).size.width / 2,
                             child: FilledButton(
-                              style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.blueGrey)),
+                                style: ButtonStyle(
+                                    backgroundColor: MaterialStatePropertyAll(
+                                        Colors.blueGrey)),
                                 onPressed: () {},
                                 child: Text('Upgrade to PRO')),
                           )

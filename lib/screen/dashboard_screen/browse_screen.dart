@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../../widgets/curve_painter.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class BrowseScreen extends StatefulWidget {
   @override
@@ -306,24 +307,34 @@ class _BrowseScreenState extends State<BrowseScreen> {
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           automaticallyImplyLeading: false,
+          backgroundColor: Color(0xFFE9E8E8),
+          elevation: 0,
           title: Container(
             child: Text(
-              '${address}',
+              "Browse",
               textAlign: TextAlign.center,
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
+              style: GoogleFonts.merriweather(
+                  color: Color(0xFF3D1766),
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
                   letterSpacing: 0.3),
             ),
           ),
           actions: <Widget>[
             IconButton(
-              icon: Icon(Icons.qr_code_scanner_rounded),
-              onPressed: () {},
+              icon: Icon(
+                Icons.favorite,
+                color: Colors.black,
+              ),
+              onPressed: () {
+                Navigator.pushNamed(context, '/FavoriteScreen');
+              },
             ),
             IconButton(
-              icon: Icon(Icons.filter_alt_rounded),
+              icon: Icon(
+                Icons.filter_alt_rounded,
+                color: Colors.black,
+              ),
               onPressed: () {
                 _showSimpleModalDialog(context);
               },
@@ -510,8 +521,8 @@ class _BrowseScreenState extends State<BrowseScreen> {
                             ],
                           ),
                           Container(
-                            padding:
-                                EdgeInsets.only(left: 60, right: 60, bottom: 15),
+                            padding: EdgeInsets.only(
+                                left: 60, right: 60, bottom: 15),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [

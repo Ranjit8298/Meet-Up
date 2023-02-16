@@ -2,8 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:meet_up/screen/onboarding_screen/profile_image_choose_screen.dart';
-import 'package:meet_up/widgets/custom_back_button.dart';
-import 'package:meet_up/widgets/custom_data_input.dart';
 import 'package:meet_up/widgets/custom_textFormField.dart';
 
 class BasicInformationSCreen extends StatefulWidget {
@@ -26,6 +24,8 @@ class _BasicInformationSCreenState extends State<BasicInformationSCreen> {
   final _formKey = GlobalKey<FormState>();
   DateTime selectedDate = DateTime.now();
 
+  bool isError = false;
+
   var male_width = 80.0;
   var male_height = 80.0;
   bool male_flag = true;
@@ -44,13 +44,6 @@ class _BasicInformationSCreenState extends State<BasicInformationSCreen> {
       body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
-        decoration: BoxDecoration(
-            gradient: LinearGradient(colors: [
-          Colors.white,
-          Colors.white24,
-          Colors.blue.shade50,
-          Colors.red.shade300
-        ], begin: FractionalOffset(1.0, 0.0), end: FractionalOffset(0.0, 1.0))),
         padding: const EdgeInsets.all(10),
         child: SafeArea(
             left: true,
@@ -74,6 +67,18 @@ class _BasicInformationSCreenState extends State<BasicInformationSCreen> {
                         ),
                       ),
                     ),
+                    Container(
+                      margin:
+                          const EdgeInsets.only(top: 10, left: 10, bottom: 10),
+                      child: const Text(
+                        'Basic Information',
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontFamily: 'Poppins',
+                          letterSpacing: 0.4,
+                        ),
+                      ),
+                    ),
                     CustomTextFormField(
                         txtController: firstNameTxt,
                         onChanged: (firstNameTxt) {
@@ -83,11 +88,14 @@ class _BasicInformationSCreenState extends State<BasicInformationSCreen> {
                         prefixIcon: Icon(Icons.person_rounded),
                         labelText: 'First Name',
                         keyboardType: TextInputType.text,
-                        validator: (firstNameTxt) {
-                          if (firstNameTxt.toString().isEmpty) {
+                        validator: (value) {
+                          if (value!.toString().trim().isEmpty) {
                             return 'Please enter first name';
+                          } else if (!RegExp(r'^[a-z A-Z]+$').hasMatch(value)) {
+                            return 'Please enter correct name';
+                          } else {
+                            return null;
                           }
-                          return null;
                         }),
                     CustomTextFormField(
                         txtController: emailTxt,
@@ -98,44 +106,57 @@ class _BasicInformationSCreenState extends State<BasicInformationSCreen> {
                         prefixIcon: Icon(Icons.email_rounded),
                         labelText: 'Email',
                         keyboardType: TextInputType.emailAddress,
-                        validator: (emailTxt) {
-                          if (emailTxt.toString().isEmpty) {
+                        validator: (value) {
+                          if (value!.toString().trim().isEmpty) {
                             return 'Please enter email';
+                          } else if (!RegExp(
+                                  r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                              .hasMatch(value)) {
+                            return 'Please enter correct email';
+                          } else {
+                            return null;
                           }
-                          return null;
                         }),
                     Container(
                       margin: const EdgeInsets.all(10),
-                      child: TextField(
-                          controller: dateTxt,
-                          readOnly: true,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            prefixIcon: Icon(Icons.calendar_today),
-                            labelText: "Date",
-                            // hintText: "Select Date",
+                      child: TextFormField(
+                        controller: dateTxt,
+                        readOnly: true,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
                           ),
-                          onTap: () async {
-                            DateTime? pickedDate = await showDatePicker(
-                                context: context,
-                                initialDate: DateTime(2004),
-                                firstDate: DateTime(1900),
-                                lastDate: DateTime(2004));
-                            if (pickedDate != null) {
-                              print(pickedDate);
-                              String formattedDate =
-                                  DateFormat('yyyy-MM-dd').format(pickedDate);
-                              print(formattedDate);
+                          prefixIcon: Icon(Icons.calendar_today),
+                          labelText: "D.O.B",
+                          hintText: "Choose D.O.B",
+                        ),
+                        onTap: () async {
+                          DateTime? pickedDate = await showDatePicker(
+                              context: context,
+                              initialDate: DateTime(2004),
+                              firstDate: DateTime(1900),
+                              lastDate: DateTime(2004));
+                          if (pickedDate != null) {
+                            print(pickedDate);
+                            String formattedDate =
+                                DateFormat('dd-MM-yyyy').format(pickedDate);
+                            print(formattedDate);
 
-                              setState(() {
-                                dateTxt.text = formattedDate;
-                              });
-                            } else {
-                              print("Date is not selected");
-                            }
-                          }),
+                            setState(() {
+                              dateTxt.text = formattedDate;
+                            });
+                          } else {
+                            print("Date is not selected");
+                          }
+                        },
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Please choose DOB';
+                          } else {
+                            return null;
+                          }
+                        },
+                      ),
                     ),
                     Container(
                       margin: EdgeInsets.only(left: 10, top: 10),
@@ -221,6 +242,15 @@ class _BasicInformationSCreenState extends State<BasicInformationSCreen> {
                         ],
                       ),
                     ),
+                    isError == true
+                        ? Container(
+                            margin: EdgeInsets.only(left: 10, top: 10),
+                            child: Text(
+                              'Please select gender',
+                              style: TextStyle(color: Colors.red, fontSize: 16),
+                            ),
+                          )
+                        : SizedBox(),
                     Center(
                       child: Container(
                         width: 335,
@@ -228,11 +258,14 @@ class _BasicInformationSCreenState extends State<BasicInformationSCreen> {
                         margin: const EdgeInsets.only(top: 40, bottom: 10),
                         child: ElevatedButton(
                             onPressed: () {
-                              Navigator.push(context, MaterialPageRoute(
-                                builder: (context) {
-                                  return ProfileImageChooseScreen();
-                                },
-                              ));
+                              if (_formKey.currentState!.validate()) {
+                                isError = false;
+                                Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) {
+                                    return ProfileImageChooseScreen();
+                                  },
+                                ));
+                              }
                             },
                             child: const Text(
                               'NEXT',

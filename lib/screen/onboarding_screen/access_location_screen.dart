@@ -6,7 +6,9 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:meet_up/screen/onboarding_screen/map_view_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:meet_up/widgets/custom_header.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:android_intent_plus/android_intent.dart';
+import 'package:android_intent_plus/flag.dart';
 
 class AccessLocationScreen extends StatefulWidget {
   @override
@@ -15,7 +17,6 @@ class AccessLocationScreen extends StatefulWidget {
 
 class _AccessLocationScreenState extends State<AccessLocationScreen> {
   String? _currentAddress;
-
   Position? _currentPosition;
 
   Future<bool> _handleLocationPermission() async {
@@ -82,6 +83,33 @@ class _AccessLocationScreenState extends State<AccessLocationScreen> {
     _getCurrentPosition();
   }
 
+  Future _checkGps() async {
+    // if (!(await Geolocator.isLocationServiceEnabled())) {
+    if (Theme.of(context).platform == TargetPlatform.android) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Can't get current location"),
+              content:
+                  const Text('Please make sure you enable GPS and try again'),
+              actions: <Widget>[
+                ElevatedButton(
+                    child: Text('Ok'),
+                    onPressed: () {
+                      final AndroidIntent intent = AndroidIntent(
+                          action: 'android.settings.LOCATION_SOURCE_SETTINGS');
+                      intent.launch();
+                      Navigator.of(context, rootNavigator: true).pop();
+                      _getCurrentPosition();
+                    })
+              ],
+            );
+          });
+    }
+    // }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -90,13 +118,6 @@ class _AccessLocationScreenState extends State<AccessLocationScreen> {
       body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
-        decoration: BoxDecoration(
-            gradient: LinearGradient(colors: [
-          Colors.white,
-          Colors.white24,
-          Colors.blue.shade50,
-          Colors.red.shade300
-        ], begin: FractionalOffset(1.0, 0.0), end: FractionalOffset(0.0, 1.0))),
         padding: const EdgeInsets.all(10),
         child: SafeArea(
             left: true,
@@ -138,75 +159,41 @@ class _AccessLocationScreenState extends State<AccessLocationScreen> {
                           color: Color(0xFF3D1766)),
                     ),
                   ),
-                  (_currentPosition?.latitude != null &&
-                          _currentPosition?.longitude != null)
-                      ? Container(
-                          width: 335,
-                          height: 45,
-                          margin: const EdgeInsets.only(top: 60, bottom: 10),
-                          child: ElevatedButton(
-                              onPressed: () {
-                                setState(() {
-                                  _getCurrentPosition();
-                                });
-                                if (_currentPosition?.latitude != null &&
-                                    _currentPosition?.longitude != null) {
-                                  Navigator.push(context, MaterialPageRoute(
-                                    builder: (context) {
-                                      return MapViewScreen(
-                                          latitude: _currentPosition?.latitude,
-                                          longitude:
-                                              _currentPosition?.longitude,
-                                          currentAddress: _currentAddress);
-                                    },
-                                  ));
-                                } else {
-                                  Center(
-                                      child: CircularProgressIndicator(
-                                    color: Colors.red,
-                                  ));
-                                }
+                  Container(
+                    width: 335,
+                    height: 45,
+                    margin: const EdgeInsets.only(top: 60, bottom: 10),
+                    child: ElevatedButton(
+                        onPressed: () async {
+                          // setState(() {
+                          //   // _getCurrentPosition();
+
+                          //   if(_checkGps());
+                          // });
+                          if (!(await Geolocator.isLocationServiceEnabled())) {
+                            _checkGps();
+                          } else if (_currentPosition?.latitude != null &&
+                              _currentPosition?.longitude != null) {
+                            _getCurrentPosition();
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (context) {
+                                return MapViewScreen(
+                                    latitude: _currentPosition?.latitude,
+                                    longitude: _currentPosition?.longitude,
+                                    currentAddress: _currentAddress);
                               },
-                              child: const Text(
-                                'ACCESS LOCATION',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: 'Poppins',
-                                    letterSpacing: 0.4,
-                                    fontSize: 16),
-                              )),
-                        )
-                      : Column(
-                          children: [
-                            Container(
-                              margin: EdgeInsets.only(top: 30),
-                              child: Text(
-                                'Please refresh for getting current location',
-                                textAlign: TextAlign.center,
-                                style: GoogleFonts.merriweather(
-                                    color: Color(0xFF3D1766), fontSize: 16),
-                              ),
-                            ),
-                            Container(
-                                margin: EdgeInsets.only(top: 10),
-                                child: CircularProgressIndicator()),
-                            Container(
-                              width: 335,
-                              height: 45,
-                              margin: EdgeInsets.only(top: 30),
-                              child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Color(0xFF3D1766),
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      _getCurrentPosition();
-                                    });
-                                  },
-                                  child: Text('REFRESH')),
-                            ),
-                          ],
-                        ),
+                            ));
+                          }
+                        },
+                        child: const Text(
+                          'ACCESS LOCATION',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: 'Poppins',
+                              letterSpacing: 0.4,
+                              fontSize: 16),
+                        )),
+                  )
                 ],
               ),
             )),

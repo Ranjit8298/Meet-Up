@@ -9,22 +9,21 @@ class MutualLikeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // systemOverlayStyle: SystemUiOverlayStyle(
-        //   systemNavigationBarColor: Colors.white, // Navigation bar
-        //   statusBarColor: Colors.transparent, // Status bar
-        // ),
-        title: Text('Mutual Like'),
+        automaticallyImplyLeading: false,
+        elevation: 0,
+        backgroundColor: Color(0xFFE9E8E8),
+        title: Text(
+          'Mutual Like',
+          style: GoogleFonts.merriweather(
+              color: Color(0xFF3D1766),
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 0.3),
+        ),
       ),
       body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
-        decoration: BoxDecoration(
-            gradient: LinearGradient(colors: [
-          Colors.white,
-          Colors.white24,
-          Colors.blue.shade50,
-          Colors.red.shade100
-        ], begin: FractionalOffset(1.0, 0.0), end: FractionalOffset(0.0, 1.0))),
         child: SafeArea(
             left: true,
             top: true,
@@ -125,18 +124,33 @@ class MutualLikeScreen extends StatelessWidget {
                         height: 45,
                         margin: EdgeInsets.only(top: 50),
                         child: ElevatedButton(
-                            onPressed: () {}, child: Text('MESSAGE')),
+                            onPressed: () {},
+                            child: Text(
+                              'MESSAGE',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: 'Poppins',
+                                  letterSpacing: 0.3,
+                                  fontSize: 18),
+                            )),
                       ),
                       Container(
                         width: 335,
                         height: 45,
-                        margin: EdgeInsets.only(top: 15),
+                        margin: EdgeInsets.only(top: 25),
                         child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Color(0xFF3D1766),
                             ),
                             onPressed: () {},
-                            child: Text('KEEP BROWSING')),
+                            child: Text(
+                              'KEEP BROWSING',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: 'Poppins',
+                                  letterSpacing: 0.3,
+                                  fontSize: 18),
+                            )),
                       ),
                     ],
                   ),
