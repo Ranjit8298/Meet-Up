@@ -9,6 +9,7 @@ class FavoriteScreen extends StatefulWidget {
 
 class _FavoriteScreenState extends State<FavoriteScreen> {
   var searchController = TextEditingController();
+  bool showLoder = true;
 
   static List<FavoriteModel> main_favoriteModel = [
     FavoriteModel(
@@ -133,9 +134,17 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Future.delayed(const Duration(seconds: 2), () {
+      setState(() {
+        showLoder = false;
+      });
+    });
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
+        // automaticallyImplyLeading: false,
+        iconTheme: IconThemeData(
+          color: Colors.black, //change your color here
+        ),
         elevation: 0,
         backgroundColor: Color(0xFFE9E8E8),
         title: Text(
@@ -147,124 +156,132 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
               letterSpacing: 0.3),
         ),
       ),
-      body: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        color: Colors.white,
-        child: SafeArea(
-            left: true,
-            top: true,
-            right: true,
-            bottom: true,
-            child: Column(
-              children: [
-                Container(
-                  // margin: EdgeInsets.all(10),
-                  // color: Color(0xFFF7EFE5),
-                  padding: EdgeInsets.all(10),
-                  child: TextField(
-                    controller: searchController,
-                    maxLines: 1,
-                    onChanged: (value) {
-                      updateList(value);
-                    },
-                    decoration: InputDecoration(
-                      labelText: 'Search by Name',
-                      hintText: 'Search by Name',
-                      isDense: true,
-                      prefixIcon: Icon(Icons.search_rounded),
-                      contentPadding: EdgeInsets.symmetric(vertical: 15.0),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20),
+      body: showLoder
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              color: Colors.white,
+              child: SafeArea(
+                  left: true,
+                  top: true,
+                  right: true,
+                  bottom: true,
+                  child: Column(
+                    children: [
+                      Container(
+                        // margin: EdgeInsets.all(10),
+                        // color: Color(0xFFF7EFE5),
+                        padding: EdgeInsets.all(10),
+                        child: TextField(
+                          controller: searchController,
+                          maxLines: 1,
+                          onChanged: (value) {
+                            updateList(value);
+                          },
+                          decoration: InputDecoration(
+                            labelText: 'Search by Name',
+                            hintText: 'Search by Name',
+                            isDense: true,
+                            prefixIcon: Icon(Icons.search_rounded),
+                            contentPadding:
+                                EdgeInsets.symmetric(vertical: 15.0),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                    child: display_favorite_list.length == 0
-                        ? Center(
-                            child: Container(
-                            padding: EdgeInsets.all(10),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
-                                  child: Image(
-                                      fit: BoxFit.cover,
-                                      filterQuality: FilterQuality.high,
-                                      image: new AssetImage(
-                                          'assets/images/no_result.png')),
-                                ),
-                                Container(
-                                  child: Text(
-                                    'No Result Found',
-                                    style: GoogleFonts.merriweather(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 0.3,
-                                        color: Color(0xFF3D1766)),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ))
-                        : Container(
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: display_favorite_list.length,
-                              itemBuilder: (context, index) {
-                                return Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  height: 80,
-                                  margin: EdgeInsets.all(10),
-                                  padding: EdgeInsets.all(5),
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(15),
-                                      boxShadow: [
-                                        BoxShadow(
-                                            blurRadius: 3.0,
-                                            spreadRadius: 3.0,
-                                            color: Colors.grey,
-                                            offset: Offset(0.0, 0.0))
-                                      ]),
-                                  child: ListTile(
-                                    leading: CircleAvatar(
-                                      radius: 30,
-                                      backgroundImage: AssetImage(
-                                          '${display_favorite_list[index].userImg}'),
-                                    ),
-                                    title: Text(
-                                      '${display_favorite_list[index].userName}',
-                                      style: GoogleFonts.merriweather(
-                                          color: Color(0xFF3D1766),
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 15),
-                                    ),
-                                    subtitle: Text(
-                                      '${display_favorite_list[index].userPosition}',
-                                      maxLines: 1,
-                                      softWrap: false,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: GoogleFonts.merriweather(
-                                          color: Colors.grey),
-                                    ),
-                                    trailing: FilledButton(
-                                        onPressed: () {
-                                          _handleRemoveAction();
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.blueGrey,
+                      Expanded(
+                          child: display_favorite_list.length == 0
+                              ? Center(
+                                  child: Container(
+                                  padding: EdgeInsets.all(10),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        child: Image(
+                                            fit: BoxFit.cover,
+                                            filterQuality: FilterQuality.high,
+                                            image: new AssetImage(
+                                                'assets/images/no_result.png')),
+                                      ),
+                                      Container(
+                                        child: Text(
+                                          'No Result Found',
+                                          style: GoogleFonts.merriweather(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                              letterSpacing: 0.3,
+                                              color: Color(0xFF3D1766)),
                                         ),
-                                        child: Text('Remove')),
+                                      )
+                                    ],
                                   ),
-                                );
-                              },
-                            ),
-                          ))
-              ],
-            )),
-      ),
+                                ))
+                              : Container(
+                                  child: ListView.builder(
+                                    shrinkWrap: true,
+                                    itemCount: display_favorite_list.length,
+                                    itemBuilder: (context, index) {
+                                      return Container(
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        height: 80,
+                                        margin: EdgeInsets.all(10),
+                                        padding: EdgeInsets.all(5),
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                  blurRadius: 3.0,
+                                                  spreadRadius: 3.0,
+                                                  color: Colors.grey,
+                                                  offset: Offset(0.0, 0.0))
+                                            ]),
+                                        child: ListTile(
+                                          leading: CircleAvatar(
+                                            radius: 30,
+                                            backgroundImage: AssetImage(
+                                                '${display_favorite_list[index].userImg}'),
+                                          ),
+                                          title: Text(
+                                            '${display_favorite_list[index].userName}',
+                                            style: GoogleFonts.merriweather(
+                                                color: Color(0xFF3D1766),
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 15),
+                                          ),
+                                          subtitle: Text(
+                                            '${display_favorite_list[index].userPosition}',
+                                            maxLines: 1,
+                                            softWrap: false,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: GoogleFonts.merriweather(
+                                                color: Colors.grey),
+                                          ),
+                                          trailing: FilledButton(
+                                              onPressed: () {
+                                                _handleRemoveAction();
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                    Colors.blueGrey,
+                                              ),
+                                              child: Text('Remove')),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ))
+                    ],
+                  )),
+            ),
     );
   }
 }

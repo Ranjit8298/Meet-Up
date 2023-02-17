@@ -135,7 +135,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
+        // automaticallyImplyLeading: false,
+        iconTheme: IconThemeData(
+          color: Colors.black, //change your color here
+        ),
         elevation: 0,
         backgroundColor: Color(0xFFE9E8E8),
         title: Text(

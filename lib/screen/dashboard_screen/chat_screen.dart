@@ -21,6 +21,7 @@ class ChatScreen extends StatefulWidget {
   // const ChatScreen({super.key});
   String userName;
   String userImg;
+
   ChatScreen({required this.userName, required this.userImg});
 
   @override
@@ -29,6 +30,7 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   List<types.Message> _messages = [];
+  bool showLoder = true;
   final _user = const types.User(
     id: '82091008-a484-4a89-ae75-a22bf8d6f3ac',
   );
@@ -66,99 +68,112 @@ class _ChatScreenState extends State<ChatScreen> {
       );
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-      // resizeToAvoidBottomInset: false,
-      appBar: null,
-      body: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: SafeArea(
-          left: true,
-          right: true,
-          top: true,
-          bottom: true,
-          child: Container(
-            child: Column(
-              children: [
-                Container(
-                  padding: EdgeInsets.all(8),
-                  width: MediaQuery.of(context).size.width,
-                  height: 55,
-                  color: Color(0xFFE9E8E8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      IconButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          icon: Platform.isAndroid
-                              ? Icon(
-                                  Icons.arrow_back,
-                                )
-                              : Icon(
-                                  Icons.arrow_back_ios_new_rounded,
-                                )),
-                      Container(
-                        margin: EdgeInsets.only(left: 5),
-                        child: CircleAvatar(
-                          backgroundColor: Colors.grey,
-                          child: CircleAvatar(
-                            backgroundImage: AssetImage(widget.userImg),
+  Widget build(BuildContext context) {
+    Future.delayed(const Duration(seconds: 1), () {
+      setState(() {
+        showLoder = false;
+      });
+    });
+
+    return Scaffold(
+        // resizeToAvoidBottomInset: false,
+
+        appBar: null,
+        body: showLoder == true
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                child: SafeArea(
+                  left: true,
+                  right: true,
+                  top: true,
+                  bottom: true,
+                  child: Container(
+                    child: Column(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(8),
+                          width: MediaQuery.of(context).size.width,
+                          height: 55,
+                          color: Color(0xFFE9E8E8),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              IconButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  icon: Platform.isAndroid
+                                      ? Icon(
+                                          Icons.arrow_back,
+                                        )
+                                      : Icon(
+                                          Icons.arrow_back_ios_new_rounded,
+                                        )),
+                              Container(
+                                margin: EdgeInsets.only(left: 5),
+                                child: CircleAvatar(
+                                  backgroundColor: Colors.grey,
+                                  child: CircleAvatar(
+                                    backgroundImage: AssetImage(widget.userImg),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(left: 10),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      widget.userName,
+                                      style: GoogleFonts.merriweather(
+                                          color: Color(0xFF3D1766),
+                                          fontSize: 16,
+                                          letterSpacing: 0.3,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                      'Online',
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
                           ),
                         ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(left: 10),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              widget.userName,
-                              style: GoogleFonts.merriweather(
-                                  color: Color(0xFF3D1766),
-                                  fontSize: 16,
-                                  letterSpacing: 0.3,
-                                  fontWeight: FontWeight.bold),
+                        Expanded(
+                          child: Chat(
+                            isAttachmentUploading: false,
+                            l10n: const ChatL10nEn(
+                              inputPlaceholder: 'Type a message....',
                             ),
-                            Text(
-                              'Online',
-                            ),
-                          ],
+                            theme: const DefaultChatTheme(
+                                inputBackgroundColor: Color(0xFFD3D3D3),
+                                inputBorderRadius: BorderRadius.zero,
+                                inputPadding: EdgeInsets.all(15),
+                                inputTextColor: Color(0xFF3D1766)),
+                            messages: _messages,
+                            onAttachmentPressed: _handleAttachmentPressed,
+                            onMessageTap: _handleMessageTap,
+                            onPreviewDataFetched: _handlePreviewDataFetched,
+                            onSendPressed: _handleSendPressed,
+                            bubbleBuilder: _bubbleBuilder,
+                            showUserAvatars: true,
+                            showUserNames: true,
+                            user: _user,
+                          ),
                         ),
-                      )
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Chat(
-                    isAttachmentUploading: false,
-                    l10n: const ChatL10nEn(
-                      inputPlaceholder: 'Type a message....',
+                      ],
                     ),
-                    theme: const DefaultChatTheme(
-                        inputBackgroundColor: Color(0xFFD3D3D3),
-                        inputBorderRadius: BorderRadius.zero,
-                        inputPadding: EdgeInsets.all(15),
-                        inputTextColor: Color(0xFF3D1766)),
-                    messages: _messages,
-                    onAttachmentPressed: _handleAttachmentPressed,
-                    onMessageTap: _handleMessageTap,
-                    onPreviewDataFetched: _handlePreviewDataFetched,
-                    onSendPressed: _handleSendPressed,
-                    bubbleBuilder: _bubbleBuilder,
-                    showUserAvatars: true,
-                    showUserNames: true,
-                    user: _user,
                   ),
                 ),
-              ],
-            ),
-          ),
-        ),
-      ));
+              ));
+  }
 
   void _addMessage(types.Message message) {
     setState(() {

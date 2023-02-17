@@ -45,50 +45,65 @@ class _MapViewScreenState extends State<MapViewScreen> {
     widget.currentAddress = position.target as String?;
   }
 
+  bool showLoder = true;
   @override
   Widget build(BuildContext context) {
+    Future.delayed(const Duration(seconds: 1), () {
+      setState(() {
+        showLoder = false;
+      });
+    });
     return Scaffold(
         appBar: null,
-        body: SafeArea(
-          left: true,
-          top: true,
-          right: true,
-          bottom: true,
-          child: Stack(
-            children: <Widget>[
-              GoogleMap(
-                onMapCreated: _onMapCreated,
-                myLocationEnabled: true,
-                indoorViewEnabled: true,
-                trafficEnabled: true,
-                markers: getmarkers(),
-                onCameraMove: _onCameraMove,
-                initialCameraPosition: CameraPosition(
-                  target: LatLng(widget.latitude!, widget.longitude!),
-                  zoom: 17.0,
+        body: showLoder == true
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : SafeArea(
+                left: true,
+                top: true,
+                right: true,
+                bottom: true,
+                child: Stack(
+                  children: <Widget>[
+                    GoogleMap(
+                      onMapCreated: _onMapCreated,
+                      myLocationEnabled: true,
+                      indoorViewEnabled: true,
+                      trafficEnabled: true,
+                      markers: getmarkers(),
+                      onCameraMove: _onCameraMove,
+                      initialCameraPosition: CameraPosition(
+                        target: LatLng(widget.latitude!, widget.longitude!),
+                        zoom: 17.0,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 15),
+                      child: Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Container(
+                              width: 200,
+                              height: 45,
+                              child: ElevatedButton(
+                                  onPressed: () async {
+                                    var prefs =
+                                        await SharedPreferences.getInstance();
+                                    prefs.setString('address',
+                                        widget.currentAddress.toString());
+                                    Navigator.push(context, MaterialPageRoute(
+                                      builder: (context) {
+                                        return BottomTab();
+                                      },
+                                    ));
+                                  },
+                                  child: Text(
+                                    'NEXT',
+                                    style: TextStyle(fontSize: 18),
+                                  )))),
+                    ),
+                  ],
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 15),
-                child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                        width: 150,
-                        child: ElevatedButton(
-                            onPressed: () async {
-                              var prefs = await SharedPreferences.getInstance();
-                              prefs.setString(
-                                  'address', widget.currentAddress.toString());
-                              Navigator.push(context, MaterialPageRoute(
-                                builder: (context) {
-                                  return BottomTab();
-                                },
-                              ));
-                            },
-                            child: Text('NEXT')))),
-              ),
-            ],
-          ),
-        ));
+              ));
   }
 }

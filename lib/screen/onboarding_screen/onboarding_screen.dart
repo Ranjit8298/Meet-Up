@@ -4,9 +4,14 @@ import 'package:lottie/lottie.dart';
 import 'package:meet_up/screen/onboarding_screen/checked_in_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class OnboardingScreen extends StatelessWidget {
+class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
 
+  @override
+  State<OnboardingScreen> createState() => _OnboardingScreenState();
+}
+
+class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

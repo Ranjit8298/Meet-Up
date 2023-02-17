@@ -110,94 +110,111 @@ class _AccessLocationScreenState extends State<AccessLocationScreen> {
     // }
   }
 
+  bool showLoder = true;
   @override
   Widget build(BuildContext context) {
+    Future.delayed(const Duration(seconds: 1), () {
+      setState(() {
+        showLoder = false;
+      });
+    });
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: null,
-      body: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        padding: const EdgeInsets.all(10),
-        child: SafeArea(
-            left: true,
-            top: true,
-            right: true,
-            bottom: true,
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Container(
-                    width: 260,
-                    height: 260,
-                    margin: const EdgeInsets.only(top: 100),
-                    child: Image.asset(
-                      'assets/images/access_location.png',
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(top: 20),
-                    child: Text(
-                      'Access Live Location',
-                      style: TextStyle(
-                          fontSize: 22,
-                          letterSpacing: 0.3,
-                          fontFamily: 'Poppins',
-                          color: Color(0xFF3D1766)),
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(top: 0),
-                    child: Text(
-                      'Search hangout places near by to locate your matches.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontSize: 14,
-                          letterSpacing: 0.3,
-                          fontFamily: 'Poppins',
-                          color: Color(0xFF3D1766)),
-                    ),
-                  ),
-                  Container(
-                    width: 335,
-                    height: 45,
-                    margin: const EdgeInsets.only(top: 60, bottom: 10),
-                    child: ElevatedButton(
-                        onPressed: () async {
-                          // setState(() {
-                          //   // _getCurrentPosition();
+      body: showLoder == true
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              padding: const EdgeInsets.all(10),
+              child: SafeArea(
+                  left: true,
+                  top: true,
+                  right: true,
+                  bottom: true,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Container(
+                          width: 260,
+                          height: 260,
+                          margin: const EdgeInsets.only(top: 100),
+                          child: Image.asset(
+                            'assets/images/access_location.png',
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(top: 20),
+                          child: Text(
+                            'Access Live Location',
+                            style: TextStyle(
+                                fontSize: 22,
+                                letterSpacing: 0.3,
+                                fontFamily: 'Poppins',
+                                color: Color(0xFF3D1766)),
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(top: 0),
+                          child: Text(
+                            'Search hangout places near by to locate your matches.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 14,
+                                letterSpacing: 0.3,
+                                fontFamily: 'Poppins',
+                                color: Color(0xFF3D1766)),
+                          ),
+                        ),
+                        Container(
+                          width: 335,
+                          height: 45,
+                          margin: const EdgeInsets.only(top: 60, bottom: 10),
+                          child: ElevatedButton(
+                              onPressed: () async {
+                                // setState(() {
+                                //   // _getCurrentPosition();
 
-                          //   if(_checkGps());
-                          // });
-                          if (!(await Geolocator.isLocationServiceEnabled())) {
-                            _checkGps();
-                          } else if (_currentPosition?.latitude != null &&
-                              _currentPosition?.longitude != null) {
-                            _getCurrentPosition();
-                            Navigator.push(context, MaterialPageRoute(
-                              builder: (context) {
-                                return MapViewScreen(
-                                    latitude: _currentPosition?.latitude,
-                                    longitude: _currentPosition?.longitude,
-                                    currentAddress: _currentAddress);
+                                //   if(_checkGps());
+                                // });
+                                if (!(await Geolocator
+                                    .isLocationServiceEnabled())) {
+                                  _checkGps();
+                                } else if (_currentPosition?.latitude != null &&
+                                    _currentPosition?.longitude != null) {
+                                  _getCurrentPosition();
+                                  Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) {
+                                      return MapViewScreen(
+                                          latitude: _currentPosition?.latitude,
+                                          longitude:
+                                              _currentPosition?.longitude,
+                                          currentAddress: _currentAddress);
+                                    },
+                                  ));
+                                } else {
+                                  Center(
+                                      child: CircularProgressIndicator(
+                                    color: Colors.red,
+                                  ));
+                                }
                               },
-                            ));
-                          }
-                        },
-                        child: const Text(
-                          'ACCESS LOCATION',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: 'Poppins',
-                              letterSpacing: 0.4,
-                              fontSize: 16),
-                        )),
-                  )
-                ],
-              ),
-            )),
-      ),
+                              child: const Text(
+                                'ACCESS LOCATION',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: 'Poppins',
+                                    letterSpacing: 0.4,
+                                    fontSize: 16),
+                              )),
+                        )
+                      ],
+                    ),
+                  )),
+            ),
     );
   }
 }

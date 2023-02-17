@@ -47,7 +47,10 @@ class _MatchesUserScreenState extends State<MatchesUserScreen> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Color(0xFFE9E8E8),
-        automaticallyImplyLeading: false,
+        iconTheme: IconThemeData(
+          color: Colors.black, //change your color here
+        ),
+        // automaticallyImplyLeading: false,
         title: widget.isQrCode != true
             ? Text.rich(
                 TextSpan(
@@ -69,7 +72,12 @@ class _MatchesUserScreenState extends State<MatchesUserScreen> {
                   ],
                 ),
               )
-            : Text('Matches Users'),
+            : Text('Matches Users',
+                style: GoogleFonts.merriweather(
+                    color: Color(0xFF3D1766),
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 0.3)),
       ),
       body: Container(
         width: MediaQuery.of(context).size.width,

@@ -34,14 +34,15 @@ class _QrScannerScreeneState extends State<QrScannerScreen> {
   void readQr() async {
     if (result != null) {
       controller!.pauseCamera();
+      // await controller!.flipCamera();
       print(result!.code);
 
-      Navigator.pushReplacement(context, MaterialPageRoute(
+      Navigator.push(context, MaterialPageRoute(
         builder: (context) {
           return MatchesUserScreen(isQrCode: true);
         },
       ));
-
+      Navigator.of(context).pop();
       controller!.dispose();
     }
   }
@@ -49,6 +50,7 @@ class _QrScannerScreeneState extends State<QrScannerScreen> {
   @override
   Widget build(BuildContext context) {
     readQr();
+
     return Scaffold(
       body: QRView(
         key: qrKey,

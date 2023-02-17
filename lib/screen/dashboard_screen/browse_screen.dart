@@ -12,6 +12,7 @@ class BrowseScreen extends StatefulWidget {
 
 class _BrowseScreenState extends State<BrowseScreen> {
   late String address = '';
+  bool showLoder = true;
 
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
@@ -300,6 +301,11 @@ class _BrowseScreenState extends State<BrowseScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Future.delayed(const Duration(seconds: 2), () {
+      setState(() {
+        showLoder = false;
+      });
+    });
     return RefreshIndicator(
       key: _refreshIndicatorKey,
       onRefresh: _refresh,
@@ -341,7 +347,7 @@ class _BrowseScreenState extends State<BrowseScreen> {
             ),
           ],
         ),
-        body: Container(
+        body:showLoder == true ? Center(child: CircularProgressIndicator(),): Container(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
           color: Colors.black,

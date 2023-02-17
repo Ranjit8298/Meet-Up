@@ -11,6 +11,7 @@ class InvitationScreen extends StatefulWidget {
 
 class _InvitationScreenState extends State<InvitationScreen> {
   late String address = '';
+  bool showLoder = true;
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
 
@@ -34,6 +35,11 @@ class _InvitationScreenState extends State<InvitationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Future.delayed(const Duration(seconds: 1), () {
+      setState(() {
+        showLoder = false;
+      });
+    });
     return RefreshIndicator(
       key: _refreshIndicatorKey,
       onRefresh: _refresh,
@@ -64,113 +70,123 @@ class _InvitationScreenState extends State<InvitationScreen> {
           //   ),
           // ],
         ),
-        body: Container(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          // padding: EdgeInsets.all(10),
-          child: SafeArea(
-              left: true,
-              top: true,
-              right: true,
-              bottom: true,
-              child: Column(
-                children: [
-                  Expanded(
-                      child: Container(
-                    // margin: EdgeInsets.all(10),
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: userData.length,
-                      itemBuilder: (context, index) {
-                        return Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height / 10,
-                          margin: EdgeInsets.all(10),
-                          padding: EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(10),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey,
-                                  blurRadius: 5.0, // Soften the shaodw
-                                  spreadRadius: 2.0,
-                                  offset: Offset(0.0, 0.0),
-                                )
-                              ]),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                width: 50,
-                                child: CircleAvatar(
-                                  radius: 30,
-                                  backgroundImage: NetworkImage(
-                                      '${userData[index]['location_image']}'),
-                                ),
-                              ),
-                              Container(
-                                width: 125,
-                                alignment: Alignment.centerLeft,
-                                margin: EdgeInsets.only(left: 10, right: 5),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      '${userData[index]['location_name']}',
-                                      softWrap: false,
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                      style: TextStyle(
-                                          color: Color(0xFF13005A),
-                                          fontSize: 16),
-                                    ),
-                                    Text(
-                                      '${userData[index]['location_user_count']}',
-                                      textAlign: TextAlign.left,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Container(
+        body: showLoder == true
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                // padding: EdgeInsets.all(10),
+                child: SafeArea(
+                    left: true,
+                    top: true,
+                    right: true,
+                    bottom: true,
+                    child: Column(
+                      children: [
+                        Expanded(
+                            child: Container(
+                          // margin: EdgeInsets.all(10),
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: userData.length,
+                            itemBuilder: (context, index) {
+                              return Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: MediaQuery.of(context).size.height / 10,
+                                margin: EdgeInsets.all(10),
+                                padding: EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey,
+                                        blurRadius: 5.0, // Soften the shaodw
+                                        spreadRadius: 2.0,
+                                        offset: Offset(0.0, 0.0),
+                                      )
+                                    ]),
                                 child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Container(
-                                      margin: EdgeInsets.only(right: 10),
-                                      child: FilledButton(
-                                          style: ButtonStyle(
-                                            backgroundColor:
-                                                MaterialStatePropertyAll<Color>(
-                                                    Colors.blueGrey),
-                                          ),
-                                          onPressed: () {},
-                                          child: Text('Reject')),
+                                      width: 50,
+                                      child: CircleAvatar(
+                                        radius: 30,
+                                        backgroundImage: NetworkImage(
+                                            '${userData[index]['location_image']}'),
+                                      ),
                                     ),
-                                    FilledButton(
-                                        style: ButtonStyle(
-                                          backgroundColor:
-                                              MaterialStatePropertyAll<Color>(
-                                                  Colors.green.shade700),
-                                        ),
-                                        onPressed: () {
-                                          Navigator.pushNamed(
-                                              context, '/MutualLikeScreen');
-                                        },
-                                        child: Text('Accept')),
+                                    Container(
+                                      width: 125,
+                                      alignment: Alignment.centerLeft,
+                                      margin:
+                                          EdgeInsets.only(left: 10, right: 5),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            '${userData[index]['location_name']}',
+                                            softWrap: false,
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,
+                                            style: TextStyle(
+                                                color: Color(0xFF13005A),
+                                                fontSize: 16),
+                                          ),
+                                          Text(
+                                            '${userData[index]['location_user_count']}',
+                                            textAlign: TextAlign.left,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            margin: EdgeInsets.only(right: 10),
+                                            child: FilledButton(
+                                                style: ButtonStyle(
+                                                  backgroundColor:
+                                                      MaterialStatePropertyAll<
+                                                              Color>(
+                                                          Colors.blueGrey),
+                                                ),
+                                                onPressed: () {},
+                                                child: Text('Reject')),
+                                          ),
+                                          FilledButton(
+                                              style: ButtonStyle(
+                                                backgroundColor:
+                                                    MaterialStatePropertyAll<
+                                                            Color>(
+                                                        Colors.green.shade700),
+                                              ),
+                                              onPressed: () {
+                                                Navigator.pushNamed(context,
+                                                    '/MutualLikeScreen');
+                                              },
+                                              child: Text('Accept')),
+                                        ],
+                                      ),
+                                    )
                                   ],
                                 ),
-                              )
-                            ],
+                              );
+                            },
                           ),
-                        );
-                      },
-                    ),
-                  ))
-                ],
-              )),
-        ),
+                        ))
+                      ],
+                    )),
+              ),
       ),
     );
   }

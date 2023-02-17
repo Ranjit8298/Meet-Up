@@ -43,7 +43,7 @@ class _BottomTabState extends State<BottomTab> {
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Dashboard'),
             BottomNavigationBarItem(
-                icon: Icon(Icons.group_rounded), label: 'Browse'),
+                icon: Icon(Icons.groups_rounded), label: 'Browse'),
             BottomNavigationBarItem(
                 icon: Icon(Icons.insert_invitation_rounded),
                 label: 'Invitations'),
@@ -70,6 +70,7 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   var searchTxt = TextEditingController();
   late String address = '';
+  bool showLoder = true;
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
 
@@ -129,6 +130,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Future.delayed(const Duration(seconds: 2), () {
+      setState(() {
+        showLoder = false;
+        address = address;
+      });
+    });
     Future<bool> showExitPopup() async {
       return await showDialog(
             context: context,
@@ -160,151 +167,163 @@ class _DashboardScreenState extends State<DashboardScreen> {
           onWillPop: showExitPopup,
           child: Scaffold(
             resizeToAvoidBottomInset: false,
-            body: Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              // padding: const EdgeInsets.all(10),
-              child: SafeArea(
-                  left: true,
-                  top: true,
-                  right: true,
-                  bottom: true,
-                  child: Column(
-                    children: [
-                      Container(
-                        child: CustomHeader(
-                          headerTxt: address,
-                          isMessageIcon: true,
-                        ),
-                      ),
-                      Container(
-                        // margin: EdgeInsets.all(10),
-                        // color: Color(0xFFF7EFE5),
-                        padding: EdgeInsets.all(10),
-                        child: TextField(
-                          controller: searchTxt,
-                          maxLines: 1,
-                          onChanged: (value) {
-                            updateList(value);
-                          },
-                          decoration: InputDecoration(
-                            labelText: 'Search by Place Name',
-                            hintText: 'Search by Place Name',
-                            isDense: true,
-                            prefixIcon: Icon(Icons.search_rounded),
-                            contentPadding:
-                                EdgeInsets.symmetric(vertical: 15.0),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20),
-                              // borderSide: const BorderSide(color: Colors.grey)
+            body: showLoder == true
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
+                    // padding: const EdgeInsets.all(10),
+                    child: SafeArea(
+                        left: true,
+                        top: true,
+                        right: true,
+                        bottom: true,
+                        child: Column(
+                          children: [
+                            Container(
+                              child: CustomHeader(
+                                headerTxt: address,
+                                isMessageIcon: true,
+                              ),
                             ),
-                          ),
-                        ),
-                      ),
-                      // seprator(),
-                      Expanded(
-                        child: display_dashboardUserList.length == 0
-                            ? Center(
-                                child: Container(
-                                padding: EdgeInsets.all(10),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      child: Image(
-                                          fit: BoxFit.cover,
-                                          filterQuality: FilterQuality.high,
-                                          image: new AssetImage(
-                                              'assets/images/no_result.png')),
-                                    ),
-                                    Container(
-                                      child: Text(
-                                        'No Result Found',
-                                        style: GoogleFonts.merriweather(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                            letterSpacing: 0.3,
-                                            color: Color(0xFF3D1766)),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ))
-                            : Container(
-                                margin: EdgeInsets.all(10),
-                                child: GridView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: display_dashboardUserList.length,
-                                  gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 2,
-                                          crossAxisSpacing: 40,
-                                          mainAxisSpacing: 10),
-                                  itemBuilder: (context, index) {
-                                    return InkWell(
-                                      onTap: () {
-                                        Navigator.push(context,
-                                            MaterialPageRoute(
-                                          builder: (context) {
-                                            return MatchesUserScreen(
-                                                locationName:
-                                                    display_dashboardUserList[
-                                                            index]
-                                                        .location_name,
-                                                userCount:
-                                                    display_dashboardUserList[
-                                                            index]
-                                                        .location_user_count);
-                                          },
-                                        ));
-                                      },
-                                      child: Container(
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Container(
-                                                width: 170,
-                                                height: 120,
-                                                child: Image(
-                                                    fit: BoxFit.cover,
-                                                    image: NetworkImage(
-                                                        '${display_dashboardUserList[index].location_image}'))),
-                                            Container(
-                                              margin: EdgeInsets.only(top: 3),
-                                              child: Text(
-                                                '${display_dashboardUserList[index].location_name}',
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                    color: Color(0xFF3D1766),
-                                                    fontSize: 16,
-                                                    letterSpacing: 0.3),
-                                              ),
-                                            ),
-                                            Container(
-                                              margin: EdgeInsets.only(top: 0),
-                                              child: Text(
-                                                '${display_dashboardUserList[index].location_user_count}',
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                    color: Colors.red,
-                                                    fontSize: 14,
-                                                    letterSpacing: 0.3),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  },
+                            Container(
+                              // margin: EdgeInsets.all(10),
+                              // color: Color(0xFFF7EFE5),
+                              padding: EdgeInsets.all(10),
+                              child: TextField(
+                                controller: searchTxt,
+                                maxLines: 1,
+                                onChanged: (value) {
+                                  updateList(value);
+                                },
+                                decoration: InputDecoration(
+                                  labelText: 'Search by Place Name',
+                                  hintText: 'Search by Place Name',
+                                  isDense: true,
+                                  prefixIcon: Icon(Icons.search_rounded),
+                                  contentPadding:
+                                      EdgeInsets.symmetric(vertical: 15.0),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                    // borderSide: const BorderSide(color: Colors.grey)
+                                  ),
                                 ),
                               ),
-                      )
-                    ],
-                  )),
-            ),
+                            ),
+                            // seprator(),
+                            Expanded(
+                              child: display_dashboardUserList.length == 0
+                                  ? Center(
+                                      child: Container(
+                                      padding: EdgeInsets.all(10),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Container(
+                                            child: Image(
+                                                fit: BoxFit.cover,
+                                                filterQuality:
+                                                    FilterQuality.high,
+                                                image: new AssetImage(
+                                                    'assets/images/no_result.png')),
+                                          ),
+                                          Container(
+                                            child: Text(
+                                              'No Result Found',
+                                              style: GoogleFonts.merriweather(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold,
+                                                  letterSpacing: 0.3,
+                                                  color: Color(0xFF3D1766)),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ))
+                                  : Container(
+                                      margin: EdgeInsets.all(10),
+                                      child: GridView.builder(
+                                        shrinkWrap: true,
+                                        itemCount:
+                                            display_dashboardUserList.length,
+                                        gridDelegate:
+                                            SliverGridDelegateWithFixedCrossAxisCount(
+                                                crossAxisCount: 2,
+                                                crossAxisSpacing: 40,
+                                                mainAxisSpacing: 10),
+                                        itemBuilder: (context, index) {
+                                          return InkWell(
+                                            onTap: () {
+                                              Navigator.push(context,
+                                                  MaterialPageRoute(
+                                                builder: (context) {
+                                                  return MatchesUserScreen(
+                                                      locationName:
+                                                          display_dashboardUserList[
+                                                                  index]
+                                                              .location_name,
+                                                      userCount:
+                                                          display_dashboardUserList[
+                                                                  index]
+                                                              .location_user_count);
+                                                },
+                                              ));
+                                            },
+                                            child: Container(
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                      width: 170,
+                                                      height: 120,
+                                                      child: Image(
+                                                          fit: BoxFit.cover,
+                                                          image: NetworkImage(
+                                                              '${display_dashboardUserList[index].location_image}'))),
+                                                  Container(
+                                                    margin:
+                                                        EdgeInsets.only(top: 3),
+                                                    child: Text(
+                                                      '${display_dashboardUserList[index].location_name}',
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                          color:
+                                                              Color(0xFF3D1766),
+                                                          fontSize: 16,
+                                                          letterSpacing: 0.3),
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    margin:
+                                                        EdgeInsets.only(top: 0),
+                                                    child: Text(
+                                                      '${display_dashboardUserList[index].location_user_count}',
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                          color: Colors.red,
+                                                          fontSize: 14,
+                                                          letterSpacing: 0.3),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                            )
+                          ],
+                        )),
+                  ),
           )),
     );
   }
