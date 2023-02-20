@@ -129,6 +129,7 @@ class _AccessLocationScreenState extends State<AccessLocationScreen> {
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
               padding: const EdgeInsets.all(10),
+              color: Colors.white,
               child: SafeArea(
                   left: true,
                   top: true,

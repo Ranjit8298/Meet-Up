@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:meet_up/screen/dashboard_screen/matches_user_screen.dart';
 
@@ -49,6 +50,8 @@ class _QrScannerScreeneState extends State<QrScannerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle(statusBarColor: Color(0xFF111111)));
     readQr();
 
     return Scaffold(

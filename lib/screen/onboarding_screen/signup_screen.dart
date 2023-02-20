@@ -36,6 +36,7 @@ class _SignupScreenState extends State<SignupScreen> {
           : Container(
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
+              color: Colors.white,
               padding: const EdgeInsets.all(10),
               child: SafeArea(
                   left: true,

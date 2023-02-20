@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/services.dart' show SystemChrome, SystemUiOverlayStyle, rootBundle;
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -69,6 +69,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle(statusBarColor: Color(0xFFE9E8E8)));
     Future.delayed(const Duration(seconds: 1), () {
       setState(() {
         showLoder = false;
@@ -216,11 +218,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                 ],
               ),
-              Container(
-                width: MediaQuery.of(context).size.width,
-                height: 1.5,
-                color: Color(0xFFD3D3D3),
-              ),
+              Divider(),
               Row(
                 children: [
                   Icon(

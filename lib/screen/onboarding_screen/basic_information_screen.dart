@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:meet_up/screen/onboarding_screen/profile_image_choose_screen.dart';
 import 'package:meet_up/widgets/custom_textFormField.dart';
@@ -20,6 +21,7 @@ class _BasicInformationSCreenState extends State<BasicInformationSCreen> {
 
   var emailTxt = TextEditingController();
   var dateTxt = TextEditingController();
+  var genderTxt = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
   DateTime selectedDate = DateTime.now();
@@ -27,15 +29,78 @@ class _BasicInformationSCreenState extends State<BasicInformationSCreen> {
   bool isError = false;
   bool showLoder = true;
 
-  var male_width = 80.0;
-  var male_height = 80.0;
-  bool male_flag = true;
-  Color male_bgcolor = Colors.black;
-
-  var female_width = 80.0;
-  var female_height = 80.0;
-  bool female_flag = true;
-  Color female_bgcolor = Colors.black;
+  void _showGenderBottomDialog() {
+    String? gender = genderTxt.text.toString();
+    showModalBottomSheet<void>(
+        context: context,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(15.0),
+          ),
+        ),
+        builder: (context) {
+          return StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              return SafeArea(
+                child: Container(
+                  height: 200,
+                  padding: EdgeInsets.all(5),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Select Gender',
+                            style: GoogleFonts.merriweather(
+                                color: Color(0xFF13005A), fontSize: 18),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Align(
+                              alignment: AlignmentDirectional.centerStart,
+                              child: Icon(
+                                Icons.cancel,
+                                size: 28,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Divider(),
+                      RadioListTile(
+                        title: Text("Male"),
+                        value: "Male",
+                        groupValue: gender,
+                        onChanged: (value) {
+                          setState(() {
+                            gender = value.toString();
+                            genderTxt.text = value.toString();
+                            Navigator.pop(context);
+                          });
+                        },
+                      ),
+                      RadioListTile(
+                        title: Text("Female"),
+                        value: "Female",
+                        groupValue: gender,
+                        onChanged: (value) {
+                          setState(() {
+                            gender = value.toString();
+                            genderTxt.text = value.toString();
+                            Navigator.pop(context);
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          );
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,12 +120,15 @@ class _BasicInformationSCreenState extends State<BasicInformationSCreen> {
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
               padding: const EdgeInsets.all(10),
+              color: Colors.white,
               child: SafeArea(
                   left: true,
                   top: true,
                   right: true,
                   bottom: true,
                   child: SingleChildScrollView(
+                    // physics: BouncingScrollPhysics(
+                    //     parent: AlwaysScrollableScrollPhysics()),
                     child: Form(
                       key: _formKey,
                       child: Column(
@@ -98,6 +166,7 @@ class _BasicInformationSCreenState extends State<BasicInformationSCreen> {
                               prefixIcon: Icon(Icons.person_rounded),
                               labelText: 'First Name',
                               keyboardType: TextInputType.text,
+                              textInputAction: TextInputAction.next,
                               validator: (value) {
                                 if (value!.toString().trim().isEmpty) {
                                   return 'Please enter first name';
@@ -117,6 +186,7 @@ class _BasicInformationSCreenState extends State<BasicInformationSCreen> {
                               prefixIcon: Icon(Icons.email_rounded),
                               labelText: 'Email',
                               keyboardType: TextInputType.emailAddress,
+                              textInputAction: TextInputAction.done,
                               validator: (value) {
                                 if (value!.toString().trim().isEmpty) {
                                   return 'Please enter email';
@@ -171,100 +241,32 @@ class _BasicInformationSCreenState extends State<BasicInformationSCreen> {
                             ),
                           ),
                           Container(
-                            margin: EdgeInsets.only(left: 10, top: 10),
-                            child: Text(
-                              'Select Gender',
-                              style: TextStyle(
-                                  fontFamily: 'Poppins',
-                                  fontSize: 17,
-                                  letterSpacing: 0.4,
-                                  color: Colors.black),
+                            margin: const EdgeInsets.all(10),
+                            child: TextFormField(
+                              controller: genderTxt,
+                              readOnly: true,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                prefixIcon: Icon(Icons.person_3_rounded),
+                                suffixIcon:
+                                    Icon(Icons.arrow_drop_down_outlined),
+                                labelText: "Select Gender",
+                                hintText: "Select Gender",
+                              ),
+                              onTap: () {
+                                _showGenderBottomDialog();
+                              },
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Please select gender';
+                                } else {
+                                  return null;
+                                }
+                              },
                             ),
                           ),
-                          Container(
-                            margin: EdgeInsets.only(top: 20),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                InkWell(
-                                  onTap: () {
-                                    setState(() {
-                                      if (male_flag != true) {
-                                        male_width = 80;
-                                        male_height = 80;
-                                        male_flag = true;
-                                        male_bgcolor = Colors.black;
-                                      } else {
-                                        male_width = 100;
-                                        male_height = 100;
-                                        male_flag = false;
-                                        male_bgcolor = Colors.blue.shade900;
-
-                                        female_width = 80;
-                                        female_height = 80;
-                                        female_flag = true;
-                                        female_bgcolor = Colors.black;
-                                      }
-                                    });
-                                  },
-                                  child: AnimatedContainer(
-                                    duration: Duration(seconds: 1),
-                                    curve: Curves.easeInOut,
-                                    width: male_width,
-                                    height: male_width,
-                                    child: Image(
-                                        fit: BoxFit.cover,
-                                        color: male_bgcolor,
-                                        image: AssetImage(
-                                            'assets/images/male.png')),
-                                  ),
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    setState(() {
-                                      if (female_flag != true) {
-                                        female_width = 80;
-                                        female_height = 80;
-                                        female_flag = true;
-                                        female_bgcolor = Colors.black;
-                                      } else {
-                                        female_width = 100;
-                                        female_height = 100;
-                                        female_flag = false;
-                                        female_bgcolor = Colors.green.shade900;
-
-                                        male_width = 80;
-                                        male_height = 80;
-                                        male_flag = true;
-                                        male_bgcolor = Colors.black;
-                                      }
-                                    });
-                                  },
-                                  child: AnimatedContainer(
-                                    duration: Duration(seconds: 1),
-                                    curve: Curves.easeInOut,
-                                    width: female_width,
-                                    height: female_height,
-                                    child: Image(
-                                        fit: BoxFit.cover,
-                                        color: female_bgcolor,
-                                        image: AssetImage(
-                                            'assets/images/female.png')),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          isError == true
-                              ? Container(
-                                  margin: EdgeInsets.only(left: 10, top: 10),
-                                  child: Text(
-                                    'Please select gender',
-                                    style: TextStyle(
-                                        color: Colors.red, fontSize: 16),
-                                  ),
-                                )
-                              : SizedBox(),
                           Center(
                             child: Container(
                               width: 335,

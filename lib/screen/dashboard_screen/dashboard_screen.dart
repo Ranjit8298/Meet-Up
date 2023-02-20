@@ -68,7 +68,8 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  var searchTxt = TextEditingController();
+  TextEditingController searchTxt = TextEditingController();
+
   late String address = '';
   bool showLoder = true;
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
@@ -130,6 +131,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor: Color(0xFFE9E8E8),
+        systemNavigationBarColor: Colors.white,
+        statusBarIconBrightness: Brightness.dark));
     Future.delayed(const Duration(seconds: 2), () {
       setState(() {
         showLoder = false;
@@ -175,6 +180,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height,
                     // padding: const EdgeInsets.all(10),
+                    color: Colors.white,
                     child: SafeArea(
                         left: true,
                         top: true,

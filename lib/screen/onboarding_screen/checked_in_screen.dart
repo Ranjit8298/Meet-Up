@@ -29,6 +29,7 @@ class _CheckedInScreenState extends State<CheckedInScreen> {
           : Container(
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
+              color: Colors.white,
               // decoration: BoxDecoration(
               //     gradient: LinearGradient(colors: [
               //   Colors.blue.shade200,

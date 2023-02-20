@@ -14,6 +14,8 @@ class _MutualLikeScreenState extends State<MutualLikeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle(statusBarColor: Color(0xFFE9E8E8)));
     Future.delayed(const Duration(seconds: 2), () {
       setState(() {
         showLoder = false;

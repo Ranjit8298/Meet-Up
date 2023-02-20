@@ -5,7 +5,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:meet_up/screen/dashboard_screen/edit_profile_screen.dart';
 import 'package:meet_up/screen/dashboard_screen/notifications_screen.dart';
 import 'package:meet_up/screen/onboarding_screen/login_screen.dart';
-import 'package:meet_up/widgets/custom_header.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -38,15 +37,12 @@ class _SettingScreenState extends State<SettingScreen> {
     });
   }
 
-  signOut() async {
-    Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          fullscreenDialog: true,
-          builder: (context) {
-            return const LoginScreen();
-          },
-        ));
+  signOut() {
+    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+      builder: (context) {
+        return LoginScreen();
+      },
+    ), (route) => false);
   }
 
   logoutDialog() {
@@ -148,6 +144,8 @@ class _SettingScreenState extends State<SettingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle(statusBarColor: Color(0xFFE9E8E8)));
     Future.delayed(const Duration(seconds: 1), () {
       setState(() {
         showLoder = false;
@@ -532,14 +530,17 @@ class _SettingScreenState extends State<SettingScreen> {
                             margin: EdgeInsets.only(top: 50, bottom: 10),
                             width: 335,
                             height: 45,
-                            child: ElevatedButton.icon(
+                            child: ElevatedButton(
                                 onPressed: () {
                                   logoutDialog();
                                 },
-                                icon: Icon(Icons.logout_rounded),
-                                label: Text(
+                                child: Text(
                                   'LOGOUT',
-                                  style: TextStyle(fontSize: 17),
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: 'Poppins',
+                                      letterSpacing: 0.3,
+                                      fontSize: 18),
                                 )),
                           )
                         ],

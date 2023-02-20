@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:lottie/lottie.dart';
 import 'package:meet_up/screen/onboarding_screen/checked_in_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -14,6 +15,7 @@ class OnboardingScreen extends StatefulWidget {
 class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: null,
@@ -21,6 +23,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         padding: const EdgeInsets.all(10),
+        color: Colors.white,
         // decoration: BoxDecoration(
         //     gradient: LinearGradient(colors: [
         //   Colors.white,

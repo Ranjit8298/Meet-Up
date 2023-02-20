@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:meet_up/screen/dashboard_screen/browse_screen.dart';
 import 'package:meet_up/screen/dashboard_screen/dashboard_screen.dart';
 import 'package:meet_up/screen/dashboard_screen/edit_profile_screen.dart';
@@ -20,8 +21,12 @@ import 'package:meet_up/screen/onboarding_screen/onboarding_screen.dart';
 import 'package:meet_up/screen/onboarding_screen/profile_image_choose_screen.dart';
 import 'package:meet_up/screen/onboarding_screen/signup_screen.dart';
 
-void main() {
-  runApp(const MyApp());
+// void main() {
+//   runApp(const MyApp());
+// }
+void main() async {
+  await Future.delayed(Duration(seconds: 3));
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -30,9 +35,14 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor: Colors.white,
+        systemNavigationBarColor: Colors.white,
+        statusBarIconBrightness: Brightness.dark));
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       useInheritedMediaQuery: true,
+
       // initialRoute: '/',
       routes: {
         // '/': (context) => OnboardingScreen(),

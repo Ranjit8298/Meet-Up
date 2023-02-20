@@ -38,6 +38,7 @@ class _OtpScreenState extends State<OtpScreen> {
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
               padding: const EdgeInsets.all(10),
+              color: Colors.white,
               child: SafeArea(
                   left: true,
                   top: true,
@@ -101,6 +102,7 @@ class _OtpScreenState extends State<OtpScreen> {
                             cursorColor: Colors.red,
                             keyboardType: TextInputType.number,
                             animationType: AnimationType.fade,
+                            autoDisposeControllers: false,
                             textStyle: const TextStyle(fontSize: 15),
                             pinTheme: PinTheme(
                                 shape: PinCodeFieldShape.box,
