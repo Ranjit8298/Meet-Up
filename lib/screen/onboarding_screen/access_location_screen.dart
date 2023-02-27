@@ -1,16 +1,14 @@
-import 'dart:collection';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:meet_up/screen/onboarding_screen/map_view_screen.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:android_intent_plus/android_intent.dart';
-import 'package:android_intent_plus/flag.dart';
 
 class AccessLocationScreen extends StatefulWidget {
+  String? mode;
+  AccessLocationScreen({this.mode});
+
   @override
   State<AccessLocationScreen> createState() => _AccessLocationScreenState();
 }
@@ -185,7 +183,8 @@ class _AccessLocationScreenState extends State<AccessLocationScreen> {
                                     .isLocationServiceEnabled())) {
                                   _checkGps();
                                 } else if (_currentPosition?.latitude != null &&
-                                    _currentPosition?.longitude != null) {
+                                    _currentPosition?.longitude != null &&
+                                    _currentAddress != '') {
                                   _getCurrentPosition();
                                   Navigator.push(context, MaterialPageRoute(
                                     builder: (context) {
@@ -193,7 +192,8 @@ class _AccessLocationScreenState extends State<AccessLocationScreen> {
                                           latitude: _currentPosition?.latitude,
                                           longitude:
                                               _currentPosition?.longitude,
-                                          currentAddress: _currentAddress);
+                                          currentAddress: _currentAddress,
+                                          mode: widget.mode);
                                     },
                                   ));
                                 } else {

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -75,10 +76,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
 
+  String? userMobileNumber;
+  CollectionReference users = FirebaseFirestore.instance.collection('users');
+  List? userAllData;
+  List? filterUserData;
+  List? nonFilterUserData;
+
   @override
   void initState() {
     super.initState();
     doSomeAsyncStuff();
+    _getUserMobileFromPrefs();
+    _filterUserDataFromFirebase();
   }
 
   Future<void> doSomeAsyncStuff() async {
@@ -129,6 +138,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
   }
 
+  _getUserMobileFromPrefs() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    setState(() {
+      userMobileNumber = preferences.getString('mobile_no');
+      print(userMobileNumber);
+    });
+  }
+
+  Future<void> _filterUserDataFromFirebase() async {
+    // Get docs from collection reference
+    QuerySnapshot querySnapshot = await users.get();
+    // Get data from docs and convert map to List
+    final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
+    setState(() {
+      userAllData = allData;
+    });
+    print('userAllData ==> ${userAllData}');
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -139,6 +169,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       setState(() {
         showLoder = false;
         address = address;
+        _getUserMobileFromPrefs();
       });
     });
     Future<bool> showExitPopup() async {

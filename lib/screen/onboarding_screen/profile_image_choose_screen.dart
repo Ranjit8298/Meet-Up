@@ -1,10 +1,14 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:meet_up/database/utility.dart';
 import 'package:meet_up/screen/onboarding_screen/access_location_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileImageChooseScreen extends StatefulWidget {
   @override
@@ -13,18 +17,20 @@ class ProfileImageChooseScreen extends StatefulWidget {
 }
 
 class _ProfileImageChooseScreenState extends State<ProfileImageChooseScreen> {
-  File? _image;
+  String imagepath = "";
   bool showLoder = true;
+
   Future getImageFromGallery() async {
     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (image != null) {
-      final imageTemporary = File(image.path);
+      final imageTemporary = image.path;
       setState(() {
-        this._image = imageTemporary;
+        this.imagepath = imageTemporary;
+        _storeUserData();
 
         Timer(const Duration(seconds: 3), (() {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return AccessLocationScreen();
+            return AccessLocationScreen(mode:'signup');
           }));
         }));
       });
@@ -34,17 +40,29 @@ class _ProfileImageChooseScreenState extends State<ProfileImageChooseScreen> {
   Future getImageFromCamera() async {
     final image = await ImagePicker().pickImage(source: ImageSource.camera);
     if (image != null) {
-      final imageTemporary = File(image.path);
+      final imageTemporary = image.path;
       setState(() {
-        this._image = imageTemporary;
+        this.imagepath = imageTemporary;
+        _storeUserData();
 
         Timer(const Duration(seconds: 3), (() {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return AccessLocationScreen();
+            return AccessLocationScreen(mode:'signup');
           }));
         }));
       });
     }
+  }
+
+  _storeUserData() async {
+    File imagefile = File(imagepath); //convert Path to File
+    Uint8List imagebytes = await imagefile.readAsBytes(); //convert to bytes
+    String base64string =
+        base64.encode(imagebytes); //convert bytes to base64 string
+    print(base64string);
+
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.setString('userImg', base64string);
   }
 
   @override
@@ -96,15 +114,6 @@ class _ProfileImageChooseScreenState extends State<ProfileImageChooseScreen> {
                             margin: const EdgeInsets.only(top: 120),
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              // gradient: LinearGradient(
-                              //     colors: [
-                              //       Colors.white,
-                              //       Colors.purple.shade50,
-                              //       Colors.blue.shade50,
-                              //       Colors.red.shade50
-                              //     ],
-                              //     begin: FractionalOffset(1.0, 0.0),
-                              //     end: FractionalOffset(0.0, 1.0)),
                               borderRadius: BorderRadius.only(
                                   topLeft: Radius.circular(20),
                                   bottomRight: Radius.circular(20)),
@@ -138,11 +147,11 @@ class _ProfileImageChooseScreenState extends State<ProfileImageChooseScreen> {
                                       borderRadius:
                                           BorderRadius.all(Radius.circular(60)),
                                     ),
-                                    child: _image != null
+                                    child: imagepath != ""
                                         ? new CircleAvatar(
                                             backgroundImage:
-                                                new FileImage(_image!),
-                                            radius: 55,
+                                                new FileImage(File(imagepath)),
+                                            radius: 65.0,
                                           )
                                         : Image(
                                             image: AssetImage(

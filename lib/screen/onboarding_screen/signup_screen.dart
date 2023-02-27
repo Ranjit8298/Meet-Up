@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:meet_up/screen/onboarding_screen/login_screen.dart';
 import 'package:meet_up/screen/onboarding_screen/otp_screen.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../widgets/custom_textFormField.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -14,11 +16,60 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   var mobileNumberTxt = TextEditingController();
+  CollectionReference users = FirebaseFirestore.instance.collection('users');
 
   final _formKey = GlobalKey<FormState>();
   bool isValidForm = false;
   bool showLoder = true;
+  var _verificationCode;
+  String storedMobileNo = '';
 
+  _verifyPhone() async {
+    await FirebaseAuth.instance.verifyPhoneNumber(
+      phoneNumber: '+91 ${mobileNumberTxt.text.toString()}',
+      verificationCompleted: (phoneAuthCredential) async {},
+      verificationFailed: (FirebaseAuthException e) {
+        print(e.message);
+        var snackBar = SnackBar(content: Text(e.message.toString()));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        print(e.message);
+      },
+      codeSent: (verificationId, forceResendingToken) {
+        setState(() {
+          _verificationCode = verificationId;
+          print(_verificationCode);
+          // mobileNumberTxt.text = '';
+          // _saveMobileNo();
+          Navigator.push(context, MaterialPageRoute(
+            builder: (context) {
+              return OtpScreen(
+                mobileNumberTxt.text.toString(),
+                _verificationCode.toString(),
+              );
+            },
+          ));
+        });
+      },
+      codeAutoRetrievalTimeout: (verificationId) {
+        // setState(() {
+        //   _verificationCode = verificationId;
+        // });
+      },
+    );
+  }
+
+//filter phone number from firebase firestore
+  Future _filterMobileNoFromFirebase() {
+    return users
+        .where('user_mobileNo', isEqualTo: mobileNumberTxt.text.toString())
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        storedMobileNo = doc["user_mobileNo"];
+      });
+    });
+  }
+  
   @override
   Widget build(BuildContext context) {
     Future.delayed(const Duration(seconds: 1), () {
@@ -80,6 +131,9 @@ class _SignupScreenState extends State<SignupScreen> {
                             labelText: 'Mobile Number',
                             onChanged: (mobileNumberTxt) {
                               print(mobileNumberTxt);
+                              storedMobileNo != ''
+                                  ? _filterMobileNoFromFirebase()
+                                  : null;
                             },
                             validator: (value) {
                               if (value!.toString().trim().isEmpty) {
@@ -106,15 +160,25 @@ class _SignupScreenState extends State<SignupScreen> {
                                         onPressed: () {
                                           if (_formKey.currentState!
                                               .validate()) {
-                                            Navigator.push(context,
-                                                MaterialPageRoute(
-                                              builder: (context) {
-                                                return OtpScreen(
-                                                  mobileNumberTxt.text
-                                                      .toString(),
-                                                );
-                                              },
-                                            ));
+                                            // _verifyPhone();
+                                            if (storedMobileNo ==
+                                                mobileNumberTxt.text
+                                                    .toString()) {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(SnackBar(
+                                                content: Text(
+                                                    "You are already register with us. Please login"),
+                                                action: SnackBarAction(
+                                                  label: 'LOGIN',
+                                                  onPressed: () {
+                                                    Navigator.pushNamed(context,
+                                                        '/LoginScreen');
+                                                  },
+                                                ),
+                                              ));
+                                            } else {
+                                              _verifyPhone();
+                                            }
                                           }
                                         },
                                         child: const Text(

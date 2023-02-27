@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "696127665104",
+    "project_id": "meet-up-c3183",
+    "storage_bucket": "meet-up-c3183.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:696127665104:android:cce50f51126ac295207fd5",
+        "android_client_info": {
+          "package_name": "com.acelucid.meetup.meet_up"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "696127665104-fnas1fl0smi0lvepiml720aubrja5bf5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.acelucid.meetup.meet_up",
+            "certificate_hash": "587c6eae993100b63182f45237a964d57ec15e78"
+          }
+        },
+        {
+          "client_id": "696127665104-4mlkgt0ear0m4flfrihd6brgpp915nvm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCv5Itxofy4SClClWoL5XZquk5879OFZPc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "696127665104-4mlkgt0ear0m4flfrihd6brgpp915nvm.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "696127665104-9k2iho17o59c18erb0ikm3emu3mhshjc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.acelucid.meetup.meetUp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

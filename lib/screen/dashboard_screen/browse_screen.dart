@@ -28,7 +28,7 @@ class _BrowseScreenState extends State<BrowseScreen> {
   Future<void> doSomeAsyncStuff() async {
     var prefs = await SharedPreferences.getInstance();
     address = prefs.getString('address')!;
-    print(address);
+    // print(address);
   }
 
   Future<Null> _refresh() {
@@ -140,7 +140,7 @@ class _BrowseScreenState extends State<BrowseScreen> {
                           onChanged: (value) {
                             setState(() {
                               distance = value.toInt();
-                              print(distance);
+                              // print(distance);
                             });
                           },
                         ),

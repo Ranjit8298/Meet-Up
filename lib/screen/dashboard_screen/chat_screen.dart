@@ -435,7 +435,7 @@ class _ChatScreenState extends State<ChatScreen> {
     );
 
     _addMessage(textMessage);
-    print(message.text);
+    // print(message.text);
   }
 
   void _loadMessages() async {

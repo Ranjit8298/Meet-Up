@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:meet_up/screen/onboarding_screen/access_location_screen.dart';
 import 'package:meet_up/screen/onboarding_screen/signup_screen.dart';
 import 'package:meet_up/widgets/custom_textFormField.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,11 +16,32 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   var mobileNumberTxt = TextEditingController();
   var passwordTxt = TextEditingController();
+  CollectionReference users = FirebaseFirestore.instance.collection('users');
 
   final _formKey = GlobalKey<FormState>();
   bool isValidForm = false;
   bool isPass = true;
   bool showLoder = true;
+  String storedMobileNo = '';
+
+  _filterMobileNoFromFirebase() {
+    return users
+        .where('user_mobileNo', isEqualTo: mobileNumberTxt.text.toString())
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        storedMobileNo = doc["user_mobileNo"];
+        print('userdata==>${doc}');
+      });
+    });
+  }
+
+  _saveMobileNo() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    setState(() {
+      preferences.setString('mobile_no', mobileNumberTxt.text.toString());
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,6 +109,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               textInputAction: TextInputAction.next,
                               onChanged: (mobileNumberTxt) {
                                 print(mobileNumberTxt);
+                                _filterMobileNoFromFirebase();
                               },
                               validator: (value) {
                                 if (value!.toString().trim().isEmpty) {
@@ -134,12 +158,33 @@ class _LoginScreenState extends State<LoginScreen> {
                                           onPressed: () {
                                             if (_formKey.currentState!
                                                 .validate()) {
-                                              Navigator.push(context,
-                                                  MaterialPageRoute(
-                                                builder: (context) {
-                                                  return AccessLocationScreen();
-                                                },
-                                              ));
+                                              if (storedMobileNo ==
+                                                  mobileNumberTxt.text
+                                                      .toString()) {
+                                                mobileNumberTxt.text = '';
+                                                passwordTxt.text = '';
+                                                _saveMobileNo();
+                                                Navigator.push(context,
+                                                    MaterialPageRoute(
+                                                  builder: (context) {
+                                                    return AccessLocationScreen();
+                                                  },
+                                                ));
+                                              } else {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(SnackBar(
+                                                  content: Text(
+                                                      "You aren't register with us. Please signup"),
+                                                  action: SnackBarAction(
+                                                    label: 'SIGN UP',
+                                                    onPressed: () {
+                                                      Navigator.pushNamed(
+                                                          context,
+                                                          '/SignupScreen');
+                                                    },
+                                                  ),
+                                                ));
+                                              }
                                             }
                                           },
                                           child: const Text(

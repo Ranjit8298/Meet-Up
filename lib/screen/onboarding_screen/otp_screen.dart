@@ -1,24 +1,81 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:meet_up/screen/onboarding_screen/basic_information_screen.dart';
-import 'package:pin_code_fields/pin_code_fields.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:pinput/pinput.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OtpScreen extends StatefulWidget {
   // const OtpScreen({super.key});
 
   var mobileNo;
-  OtpScreen(this.mobileNo, {super.key});
+  var _verificationCode;
+  OtpScreen(this.mobileNo, this._verificationCode, {super.key});
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
 }
 
 class _OtpScreenState extends State<OtpScreen> {
-  TextEditingController textEditingController = TextEditingController();
+  // late String _verificationCode;
+
+  final pinController = TextEditingController();
+  final focusNode = FocusNode();
   String currentText = "";
   bool isError = false;
   bool showLoder = true;
+  final formKey = GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    pinController.dispose();
+    focusNode.dispose();
+    super.dispose();
+  }
+
+// function for verify OTP
+  _verifyOtp() async {
+    try {
+      await FirebaseAuth.instance
+          .signInWithCredential(PhoneAuthProvider.credential(
+              verificationId: widget._verificationCode,
+              smsCode: pinController.text.toString()))
+          .then((value) {
+        if (value.user != null) {
+          _storeUserData();
+          _saveMobileNo();
+          Navigator.push(context, MaterialPageRoute(
+            builder: (context) {
+              return BasicInformationSCreen();
+            },
+          ));
+        }
+      });
+    } catch (e) {
+      FocusScope.of(context).unfocus();
+      var snackBar = SnackBar(content: Text('Invalid OTP'));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
+
+// function for store data in sharedpreferences
+  _storeUserData() async {
+    var prefs = await SharedPreferences.getInstance();
+    prefs.setString('mobileNo', widget.mobileNo);
+  }
+
+  _saveMobileNo() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    setState(() {
+      preferences.setString('mobile_no', widget.mobileNo);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,56 +153,65 @@ class _OtpScreenState extends State<OtpScreen> {
                         Container(
                           margin: const EdgeInsets.only(top: 40),
                           padding: EdgeInsets.all(8),
-                          child: PinCodeTextField(
-                            length: 6,
-                            obscureText: false,
-                            cursorColor: Colors.red,
-                            keyboardType: TextInputType.number,
-                            animationType: AnimationType.fade,
-                            autoDisposeControllers: false,
-                            textStyle: const TextStyle(fontSize: 15),
-                            pinTheme: PinTheme(
-                                shape: PinCodeFieldShape.box,
-                                borderRadius: BorderRadius.circular(5),
-                                fieldHeight: 40,
-                                fieldWidth: 40,
-                                activeFillColor: Colors.transparent,
-                                errorBorderColor: Colors.red,
-                                inactiveColor: Colors.grey,
-                                inactiveFillColor: Colors.transparent,
-                                selectedFillColor: Colors.transparent,
-                                selectedColor: Colors.green.shade900,
-                                activeColor: Colors.green.shade900),
-                            animationDuration:
-                                const Duration(milliseconds: 300),
-                            // backgroundColor: Colors.blue.shade50,
-                            enableActiveFill: true,
-                            controller: textEditingController,
-                            onCompleted: (v) {
-                              debugPrint("Completed");
-                            },
-                            onChanged: (value) {
-                              debugPrint(value);
-                              setState(() {
-                                currentText = value;
-                              });
-                            },
-                            beforeTextPaste: (text) {
-                              return true;
-                            },
-                            appContext: context,
+                          child: Form(
+                            key: formKey,
+                            child: Pinput(
+                              length: 6,
+                              pinAnimationType: PinAnimationType.fade,
+                              focusNode: focusNode,
+                              controller: pinController,
+                              autofocus: true,
+                              focusedPinTheme: PinTheme(
+                                  width: 56,
+                                  height: 56,
+                                  textStyle: TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w500),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.green),
+                                    borderRadius: BorderRadius.circular(15),
+                                  )),
+                              errorPinTheme: PinTheme(
+                                  width: 56,
+                                  height: 56,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.redAccent),
+                                    borderRadius: BorderRadius.circular(15),
+                                  )),
+                              defaultPinTheme: PinTheme(
+                                width: 55,
+                                height: 55,
+                                textStyle: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w500),
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Color(0xFFD3D3D3)),
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                              ),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Please enter OTP';
+                                } else if (value.length < 6) {
+                                  return 'Please enter correct OTP';
+                                } else {
+                                  return null;
+                                }
+                              },
+                              onCompleted: (pin) {
+                                debugPrint('onCompleted: $pin');
+                              },
+                              onChanged: (value) {
+                                debugPrint('onChanged: $value');
+                              },
+                              onSubmitted: (value) async {
+                                _verifyOtp();
+                              },
+                            ),
                           ),
                         ),
-                        isError == true
-                            ? Container(
-                                margin: EdgeInsets.only(left: 10),
-                                child: Text(
-                                  'Please enter correct OTP',
-                                  style: TextStyle(
-                                      color: Colors.red, fontSize: 16),
-                                ),
-                              )
-                            : SizedBox(),
                         Center(
                           child: Container(
                             width: 335,
@@ -153,18 +219,9 @@ class _OtpScreenState extends State<OtpScreen> {
                             margin: const EdgeInsets.only(top: 40),
                             child: ElevatedButton(
                                 onPressed: () {
-                                  setState(() {
-                                    if (currentText.length < 6) {
-                                      isError = true;
-                                    } else {
-                                      isError = false;
-                                      Navigator.push(context, MaterialPageRoute(
-                                        builder: (context) {
-                                          return BasicInformationSCreen();
-                                        },
-                                      ));
-                                    }
-                                  });
+                                  focusNode.unfocus();
+                                  formKey.currentState!.validate();
+                                  _verifyOtp();
                                 },
                                 child: const Text(
                                   'VERIFY & PROCEED',

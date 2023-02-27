@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:meet_up/screen/onboarding_screen/profile_image_choose_screen.dart';
 import 'package:meet_up/widgets/custom_textFormField.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class BasicInformationSCreen extends StatefulWidget {
   @override
@@ -28,6 +29,23 @@ class _BasicInformationSCreenState extends State<BasicInformationSCreen> {
 
   bool isError = false;
   bool showLoder = true;
+
+  _storeUserData() async {
+    var prefs = await SharedPreferences.getInstance();
+    prefs.setString('firstName', firstNameTxt.text.toString());
+    prefs.setString('emailAddress', emailTxt.text.toString());
+    prefs.setString('dob', dateTxt.text.toString());
+    prefs.setString('gender', genderTxt.text.toString());
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    firstNameTxt.text.toString();
+    emailTxt.text.toString();
+    dateTxt.text.toString();
+    genderTxt.text.toString();
+  }
 
   void _showGenderBottomDialog() {
     String? gender = genderTxt.text.toString();
@@ -275,8 +293,9 @@ class _BasicInformationSCreenState extends State<BasicInformationSCreen> {
                                   const EdgeInsets.only(top: 40, bottom: 10),
                               child: ElevatedButton(
                                   onPressed: () {
+                                    // _storeInDatabase();
                                     if (_formKey.currentState!.validate()) {
-                                      isError = false;
+                                      _storeUserData();
                                       Navigator.push(context, MaterialPageRoute(
                                         builder: (context) {
                                           return ProfileImageChooseScreen();

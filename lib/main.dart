@@ -20,6 +20,8 @@ import 'package:meet_up/screen/onboarding_screen/login_screen.dart';
 import 'package:meet_up/screen/onboarding_screen/onboarding_screen.dart';
 import 'package:meet_up/screen/onboarding_screen/profile_image_choose_screen.dart';
 import 'package:meet_up/screen/onboarding_screen/signup_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 // void main() {
 //   runApp(const MyApp());
@@ -27,6 +29,9 @@ import 'package:meet_up/screen/onboarding_screen/signup_screen.dart';
 void main() async {
   await Future.delayed(Duration(seconds: 3));
   runApp(MyApp());
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 }
 
 class MyApp extends StatelessWidget {
