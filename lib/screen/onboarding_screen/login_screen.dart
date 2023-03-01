@@ -16,7 +16,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   var mobileNumberTxt = TextEditingController();
   var passwordTxt = TextEditingController();
-  CollectionReference users = FirebaseFirestore.instance.collection('users');
+  // CollectionReference users = FirebaseFirestore.instance.collection('users');
 
   final _formKey = GlobalKey<FormState>();
   bool isValidForm = false;
@@ -24,8 +24,9 @@ class _LoginScreenState extends State<LoginScreen> {
   bool showLoder = true;
   String storedMobileNo = '';
 
-  _filterMobileNoFromFirebase() {
-    return users
+  Future _filterMobileNoFromFirebase() async {
+    await FirebaseFirestore.instance
+        .collection('users')
         .where('user_mobileNo', isEqualTo: mobileNumberTxt.text.toString())
         .get()
         .then((QuerySnapshot querySnapshot) {
@@ -38,9 +39,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
   _saveMobileNo() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    setState(() {
-      preferences.setString('mobile_no', mobileNumberTxt.text.toString());
-    });
+    preferences.setString('mobile_no', mobileNumberTxt.text);
+  }
+
+  _saveLoginState() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('isLogin', true);
   }
 
   @override
@@ -108,8 +112,11 @@ class _LoginScreenState extends State<LoginScreen> {
                               maxLength: 10,
                               textInputAction: TextInputAction.next,
                               onChanged: (mobileNumberTxt) {
-                                print(mobileNumberTxt);
-                                _filterMobileNoFromFirebase();
+                                mobileNumberTxt.addListener(() {
+                                  if (mobileNumberTxt.text.length == 10) {
+                                    _filterMobileNoFromFirebase();
+                                  }
+                                });
                               },
                               validator: (value) {
                                 if (value!.toString().trim().isEmpty) {
@@ -137,7 +144,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               validator: (value) {
                                 if (value!.toString().trim().isEmpty) {
                                   return 'Please enter password';
-                                } else if (value.toString().length <= 4) {
+                                } else if (value.toString().length < 4) {
                                   return 'Please enter at least 4 digits any password';
                                 } else {
                                   return null;
@@ -161,9 +168,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                               if (storedMobileNo ==
                                                   mobileNumberTxt.text
                                                       .toString()) {
-                                                mobileNumberTxt.text = '';
-                                                passwordTxt.text = '';
                                                 _saveMobileNo();
+                                                _saveLoginState();
                                                 Navigator.push(context,
                                                     MaterialPageRoute(
                                                   builder: (context) {

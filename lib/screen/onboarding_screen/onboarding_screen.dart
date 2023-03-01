@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:lottie/lottie.dart';
 import 'package:meet_up/screen/onboarding_screen/checked_in_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -13,9 +14,25 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
+  bool? isLoginCheck;
+  bool showLoder = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _getLoginState();
+  }
+
+  Future<void> _getLoginState() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      isLoginCheck = prefs.getBool('isLogin')!;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: null,
@@ -24,13 +41,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         height: MediaQuery.of(context).size.height,
         padding: const EdgeInsets.all(10),
         color: Colors.white,
-        // decoration: BoxDecoration(
-        //     gradient: LinearGradient(colors: [
-        //   Colors.white,
-        //   Colors.white,
-        //   Colors.white,
-        //   Colors.red.shade100
-        // ], begin: FractionalOffset(1.0, 0.0), end: FractionalOffset(0.0, 1.0))),
         child: SingleChildScrollView(
           child: SafeArea(
               bottom: true,
@@ -65,14 +75,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     margin: const EdgeInsets.only(top: 80),
                     child: ElevatedButton(
                         onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                fullscreenDialog: true,
-                                builder: (context) {
-                                  return const CheckedInScreen();
-                                },
-                              ));
+                          isLoginCheck == true
+                              ? Navigator.pushNamed(
+                                  context, '/AccessLocationScreen')
+                              : Navigator.pushNamed(
+                                  context, '/CheckedInScreen');
                         },
                         child: const Text(
                           'GET STARTED',

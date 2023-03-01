@@ -25,7 +25,7 @@ class MapViewScreen extends StatefulWidget {
 
 class _MapViewScreenState extends State<MapViewScreen> {
   Completer<GoogleMapController> _controller = Completer();
-  CollectionReference users = FirebaseFirestore.instance.collection('users');
+  // CollectionReference users = FirebaseFirestore.instance.collection('users');
   final Set<Marker> markers = new Set();
   var uuid = Uuid();
   var snackBar = SnackBar(
@@ -84,9 +84,11 @@ class _MapViewScreenState extends State<MapViewScreen> {
     });
   }
 
-  Future<void> addUser() {
-    return users
-        .add({
+  Future addUser() async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(uuid.v4())
+        .set({
           'user_id': uuid.v4(),
           'user_mobileNo': mobileNo,
           'user_firstName': firstName,
@@ -99,6 +101,11 @@ class _MapViewScreenState extends State<MapViewScreen> {
         .then((value) => ScaffoldMessenger.of(context).showSnackBar(snackBar))
         .catchError((error) =>
             ScaffoldMessenger.of(context).showSnackBar(snackBarError));
+  }
+
+  _saveLoginState() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('isLogin', true);
   }
 
   @override
@@ -144,6 +151,9 @@ class _MapViewScreenState extends State<MapViewScreen> {
                               child: ElevatedButton(
                                   onPressed: () async {
                                     widget.mode == 'signup' ? addUser() : null;
+                                    widget.mode == 'signup'
+                                        ? _saveLoginState()
+                                        : null;
 
                                     var prefs =
                                         await SharedPreferences.getInstance();

@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:meet_up/screen/onboarding_screen/login_screen.dart';
 import 'package:meet_up/screen/onboarding_screen/otp_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../widgets/custom_textFormField.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -15,12 +14,12 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-  var mobileNumberTxt = TextEditingController();
-  CollectionReference users = FirebaseFirestore.instance.collection('users');
-
+  TextEditingController mobileNumberTxt = TextEditingController();
+  // CollectionReference users = FirebaseFirestore.instance.collection('users');
   final _formKey = GlobalKey<FormState>();
   bool isValidForm = false;
   bool showLoder = true;
+  bool callFirebaseFunction = true;
   var _verificationCode;
   String storedMobileNo = '';
 
@@ -58,23 +57,35 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
 //filter phone number from firebase firestore
-  Future _filterMobileNoFromFirebase() {
-    return users
+  Future _filterMobileNoFromFirebase() async {
+    await FirebaseFirestore.instance
+        .collection('users')
         .where('user_mobileNo', isEqualTo: mobileNumberTxt.text.toString())
         .get()
         .then((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) {
-        storedMobileNo = doc["user_mobileNo"];
+        setState(() {
+          storedMobileNo = doc["user_mobileNo"];
+          print('storedMobileNo==> ${storedMobileNo}');
+        });
       });
     });
   }
-  
+
+  emptyFunction() {}
+
   @override
   Widget build(BuildContext context) {
     Future.delayed(const Duration(seconds: 1), () {
       setState(() {
         showLoder = false;
+        // _filterMobileNoFromFirebase();
       });
     });
     return Scaffold(
@@ -130,10 +141,11 @@ class _SignupScreenState extends State<SignupScreen> {
                             hintText: 'Enter Your Mobile Number',
                             labelText: 'Mobile Number',
                             onChanged: (mobileNumberTxt) {
-                              print(mobileNumberTxt);
-                              storedMobileNo != ''
-                                  ? _filterMobileNoFromFirebase()
-                                  : null;
+                              mobileNumberTxt.addListener(() {
+                                if (mobileNumberTxt.text.length == 10) {
+                                  _filterMobileNoFromFirebase();
+                                }
+                              });
                             },
                             validator: (value) {
                               if (value!.toString().trim().isEmpty) {
@@ -161,9 +173,11 @@ class _SignupScreenState extends State<SignupScreen> {
                                           if (_formKey.currentState!
                                               .validate()) {
                                             // _verifyPhone();
-                                            if (storedMobileNo ==
+                                            if (storedMobileNo !=
                                                 mobileNumberTxt.text
                                                     .toString()) {
+                                              _verifyPhone();
+                                            } else {
                                               ScaffoldMessenger.of(context)
                                                   .showSnackBar(SnackBar(
                                                 content: Text(
@@ -176,8 +190,6 @@ class _SignupScreenState extends State<SignupScreen> {
                                                   },
                                                 ),
                                               ));
-                                            } else {
-                                              _verifyPhone();
                                             }
                                           }
                                         },

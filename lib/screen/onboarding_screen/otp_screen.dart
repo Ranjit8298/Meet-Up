@@ -72,9 +72,7 @@ class _OtpScreenState extends State<OtpScreen> {
 
   _saveMobileNo() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    setState(() {
-      preferences.setString('mobile_no', widget.mobileNo);
-    });
+    preferences.setString('mobile_no', widget.mobileNo);
   }
 
   @override

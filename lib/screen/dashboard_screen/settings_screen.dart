@@ -1,3 +1,8 @@
+import 'dart:convert';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,10 +24,33 @@ class _SettingScreenState extends State<SettingScreen> {
   bool isSwitch = false;
   bool isSwitchB = true;
   bool showLoder = true;
+  bool timerCall = true;
+  late String userName;
+  late String userImg;
+  List<String> getUserList = [];
+  late String user_name;
+  late String user_email;
+  var user_img;
+  late String user_address;
+  late String userMobileNumber;
+  List? outputList;
+  List? userAllData;
+  CollectionReference users = FirebaseFirestore.instance.collection('users');
+  Uint8List? _bytesImage;
+
   @override
   void initState() {
     super.initState();
-    doSomeAsyncStuff();
+    Future.delayed(
+      Duration.zero,
+      () {
+        doSomeAsyncStuff();
+        _getUserMobileFromPrefs();
+        _filterItemFromUserAllData();
+        _getUserDataFromFirebase();
+        _getUserDataFromDatabase();
+      },
+    );
   }
 
   Future<void> doSomeAsyncStuff() async {
@@ -33,16 +61,77 @@ class _SettingScreenState extends State<SettingScreen> {
 
   Future<Null> _refresh() {
     return doSomeAsyncStuff().then((_user) {
-      setState(() => address = address);
+      setState(() {});
     });
   }
 
+  emptyFun() {}
+  _getUserMobileFromPrefs() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    setState(() {
+      userMobileNumber = preferences.getString('mobile_no')!;
+      print('userMobileNumber==> ${userMobileNumber}');
+    });
+  }
+
+  Future<void> _getUserDataFromFirebase() async {
+    // Get docs from collection reference
+    QuerySnapshot querySnapshot = await users.get();
+    // Get data from docs and convert map to List
+    final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
+    setState(() {
+      userAllData = allData;
+    });
+    // print('_getUserDataFromFirebase ==> ${userAllData}');
+  }
+
+  // filter login or signup user item
+  _filterItemFromUserAllData() {
+    outputList = userAllData
+        ?.where((item) => item['user_mobileNo'] == userMobileNumber)
+        .toList();
+    // print('outputList ==> ${outputList}');
+    return outputList;
+  }
+
+  _getUserDataFromDatabase() {
+    outputList?.forEach((e) {
+      // print('user_email ==> ${e['user_img']}');
+      setState(() {
+        user_name = e['user_firstName'];
+        user_img = e['user_img'];
+        user_address = e['user_location'];
+        user_email = e['user_email'];
+        _bytesImage = Base64Decoder().convert(e['user_img']);
+      });
+    });
+  }
+
+  _saveLoginState() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('isLogin', false);
+  }
+
+// signOut method
   signOut() {
+    _saveLoginState();
     Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
       builder: (context) {
         return LoginScreen();
       },
     ), (route) => false);
+  }
+
+  // greeting function
+  String greeting() {
+    var hour = DateTime.now().hour;
+    if (hour < 12) {
+      return 'Hello, Good Morning !';
+    }
+    if (hour < 17) {
+      return 'Hello, Good Afternoon !';
+    }
+    return 'Hello, Good Evening !';
   }
 
   logoutDialog() {
@@ -146,11 +235,18 @@ class _SettingScreenState extends State<SettingScreen> {
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle(statusBarColor: Color(0xFFE9E8E8)));
-    Future.delayed(const Duration(seconds: 1), () {
-      setState(() {
-        showLoder = false;
-      });
-    });
+    timerCall == true
+        ? Future.delayed(const Duration(seconds: 1), () {
+            setState(() {
+              showLoder = false;
+              timerCall = false;
+              // _getUserMobileFromPrefs();
+              _filterItemFromUserAllData();
+              // _getUserDataFromFirebase();
+              _getUserDataFromDatabase();
+            });
+          })
+        : null;
     return RefreshIndicator(
       key: _refreshIndicatorKey,
       onRefresh: _refresh,
@@ -227,40 +323,111 @@ class _SettingScreenState extends State<SettingScreen> {
                       child: Column(
                         children: [
                           Container(
-                            margin: EdgeInsets.only(top: 8.0),
-                            child: CircleAvatar(
-                                backgroundColor: Colors.white,
-                                radius: 45,
-                                child: Image(
-                                    image:
-                                        AssetImage('assets/images/user.png'))),
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(top: 5),
-                            child: Text(
-                              'Ranjit Kumar',
-                              style: TextStyle(
-                                  color: Colors.blueGrey,
-                                  fontSize: 18,
-                                  letterSpacing: 0.3,
-                                  fontWeight: FontWeight.w500),
+                            width: MediaQuery.of(context).size.width,
+                            height: 110,
+                            padding: EdgeInsets.all(10),
+                            margin: EdgeInsets.only(top: 1),
+                            decoration: BoxDecoration(
+                                color: Color(0xFFE9E8E8),
+                                borderRadius: BorderRadius.only(
+                                    bottomLeft: Radius.circular(20),
+                                    bottomRight: Radius.circular(20)),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey,
+                                    blurRadius: 20.0, // Soften the shaodw
+                                    spreadRadius: 3.0,
+                                    offset: Offset(0.0, 0.0),
+                                  )
+                                ]),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      child: CircleAvatar(
+                                        backgroundColor: Color(0xFF3D1766),
+                                        radius: 40,
+                                        child: CircleAvatar(
+                                          radius: 39.5,
+                                          backgroundImage:
+                                              MemoryImage(_bytesImage!),
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      margin: EdgeInsets.only(left: 15),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            greeting(),
+                                            style: GoogleFonts.merriweather(
+                                              color: Color(0xFFFC7300),
+                                              fontSize: 15.5,
+                                              letterSpacing: 0.3,
+                                            ),
+                                          ),
+                                          Container(
+                                            margin: EdgeInsets.only(top: 3),
+                                            child: Text(
+                                              user_name,
+                                              textAlign: TextAlign.left,
+                                              style: GoogleFonts.merriweather(
+                                                color: Color(0xFF3D1766),
+                                                fontSize: 18,
+                                                letterSpacing: 0.3,
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            child: Text(
+                                              user_email,
+                                              textAlign: TextAlign.left,
+                                              style: GoogleFonts.merriweather(
+                                                color: Color(0xFF3D1766),
+                                                fontSize: 15.5,
+                                                letterSpacing: 0.3,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(context, MaterialPageRoute(
+                                      builder: (context) {
+                                        return EditProfileScreen();
+                                      },
+                                    ));
+                                  },
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    height: 30,
+                                    width: 30,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Color(0xFF243763),
+                                    ),
+                                    child: Icon(Icons.edit,
+                                        color: Colors.white, size: 25),
+                                  ),
+                                )
+                              ],
                             ),
                           ),
-                          Container(
-                            width: 150,
-                            margin: EdgeInsets.only(top: 10),
-                            child: FilledButton(
-                                onPressed: () {
-                                  Navigator.push(context, MaterialPageRoute(
-                                    builder: (context) {
-                                      return EditProfileScreen();
-                                    },
-                                  ));
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.blueGrey,
-                                ),
-                                child: Text('Edit Profile')),
+                          SizedBox(
+                            height: 50,
                           ),
                           Container(
                             height: 135,
@@ -284,7 +451,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                 Text(
                                   "You're on our free plan",
                                   style: TextStyle(
-                                      color: Color(0xFF00337C),
+                                      color: Color(0xFF3D1766),
                                       fontSize: 19,
                                       letterSpacing: 0.3,
                                       fontWeight: FontWeight.bold),
@@ -295,7 +462,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                     "You want to make the most out of Hooked?",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                        color: Color(0xFF00337C),
+                                        color: Color(0xFF3D1766),
                                         fontSize: 16,
                                         letterSpacing: 0.3,
                                         fontWeight: FontWeight.w400),
@@ -361,13 +528,23 @@ class _SettingScreenState extends State<SettingScreen> {
                                     ),
                                     Container(
                                       width: 150,
-                                      child: Text(
-                                        'Dehradun',
-                                        textAlign: TextAlign.end,
-                                        style: TextStyle(
-                                            color: Colors.red,
-                                            fontSize: 15,
-                                            letterSpacing: 0.3),
+                                      child: Tooltip(
+                                        showDuration: Duration(seconds: 2),
+                                        message: user_address,
+                                        preferBelow: false,
+                                        excludeFromSemantics: true,
+                                        enableFeedback: true,
+                                        triggerMode: TooltipTriggerMode.tap,
+                                        child: Text(
+                                          user_address,
+                                          softWrap: true,
+                                          overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.end,
+                                          style: TextStyle(
+                                              color: Colors.red,
+                                              fontSize: 15,
+                                              letterSpacing: 0.3),
+                                        ),
                                       ),
                                     )
                                   ],

@@ -12,6 +12,7 @@ class CheckedInScreen extends StatefulWidget {
 
 class _CheckedInScreenState extends State<CheckedInScreen> {
   bool showLoder = true;
+
   @override
   Widget build(BuildContext context) {
     Future.delayed(const Duration(seconds: 1), () {
@@ -30,13 +31,6 @@ class _CheckedInScreenState extends State<CheckedInScreen> {
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
               color: Colors.white,
-              // decoration: BoxDecoration(
-              //     gradient: LinearGradient(colors: [
-              //   Colors.blue.shade200,
-              //   Colors.white,
-              //   Colors.white70,
-              //   Colors.black
-              // ], begin: FractionalOffset(1.0, 0.0), end: FractionalOffset(0.0, 1.0))),
               child: SingleChildScrollView(
                 child: SafeArea(
                   bottom: true,

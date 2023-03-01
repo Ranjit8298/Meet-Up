@@ -25,7 +25,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   void initState() {
     super.initState();
-    dateTxt.text = "";
+    dateTxt.text = "01-01-1999";
   }
 
   Future getImageFromGallery() async {
@@ -58,7 +58,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       ),
       builder: (BuildContext context) => SafeArea(
         child: Container(
-          height: 160,
+          height: 175,
           padding: EdgeInsets.all(5),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -83,11 +83,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
                 ],
               ),
-              Container(
-                width: MediaQuery.of(context).size.width,
-                height: 1.5,
-                color: Color(0xFFD3D3D3),
-              ),
+              Divider(),
               Row(
                 children: [
                   Icon(
