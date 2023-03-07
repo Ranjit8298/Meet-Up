@@ -31,6 +31,15 @@ android {
     // compileSdkVersion 31
     ndkVersion flutter.ndkVersion
 
+//     signingConfigs {
+//     release {
+//         storeFile file('F:/acelucid/key_store/MeetUp/meet_up.jks')
+//         storePassword "Meetup@12345"
+//         keyAlias "MeetUp"
+//         keyPassword "Meetup@12345"
+//     }
+// }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -61,6 +70,7 @@ android {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.debug
+            // signingConfig signingConfigs.release
         }
     }
 }
@@ -77,5 +87,6 @@ dependencies {
     implementation "androidx.browser:browser:1.5.0"
     implementation 'com.google.firebase:firebase-appcheck-playintegrity'
     implementation 'com.google.android.gms:play-services-safetynet:18.0.1'
+    implementation 'com.google.firebase:firebase-appcheck-safetynet:16.1.2'
     implementation 'com.android.support:multidex:1.0.3'
 }

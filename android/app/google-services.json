@@ -14,11 +14,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "696127665104-hcptjs8nc61nhripq65207922e70aqcd.apps.googleusercontent.com",
+          "client_id": "696127665104-41gh3nq7fm5nivignarri0tntg7f39co.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.acelucid.meetup.meet_up",
-            "certificate_hash": "587c6eae993100b63182f45237a964d57ec15e78"
+            "certificate_hash": "1d405d91eb668f65125fffc5f674c2c68345eaac"
           }
         },
         {

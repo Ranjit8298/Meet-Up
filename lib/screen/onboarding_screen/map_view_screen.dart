@@ -159,6 +159,7 @@ class _MapViewScreenState extends State<MapViewScreen> {
                                         await SharedPreferences.getInstance();
                                     prefs.setString('address',
                                         widget.currentAddress.toString());
+
                                     Navigator.push(context, MaterialPageRoute(
                                       builder: (context) {
                                         return BottomTab();

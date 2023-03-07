@@ -1,8 +1,6 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -30,6 +28,8 @@ class _SettingScreenState extends State<SettingScreen> {
   List<String> getUserList = [];
   late String user_name;
   late String user_email;
+  late String user_dob;
+  late String user_mobile_no;
   var user_img;
   late String user_address;
   late String userMobileNumber;
@@ -61,11 +61,15 @@ class _SettingScreenState extends State<SettingScreen> {
 
   Future<Null> _refresh() {
     return doSomeAsyncStuff().then((_user) {
-      setState(() {});
+      setState(() {
+        _getUserMobileFromPrefs();
+        _filterItemFromUserAllData();
+        _getUserDataFromFirebase();
+        _getUserDataFromDatabase();
+      });
     });
   }
 
-  emptyFun() {}
   _getUserMobileFromPrefs() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     setState(() {
@@ -102,6 +106,8 @@ class _SettingScreenState extends State<SettingScreen> {
         user_img = e['user_img'];
         user_address = e['user_location'];
         user_email = e['user_email'];
+        user_dob = e['user_dob'];
+        user_mobile_no = e['user_mobileNo'];
         _bytesImage = Base64Decoder().convert(e['user_img']);
       });
     });
@@ -126,12 +132,12 @@ class _SettingScreenState extends State<SettingScreen> {
   String greeting() {
     var hour = DateTime.now().hour;
     if (hour < 12) {
-      return 'Hello, Good Morning !';
+      return 'Hello, Good Morning';
     }
     if (hour < 17) {
-      return 'Hello, Good Afternoon !';
+      return 'Hello, Good Afternoon';
     }
-    return 'Hello, Good Evening !';
+    return 'Hello, Good Evening';
   }
 
   logoutDialog() {
@@ -236,7 +242,7 @@ class _SettingScreenState extends State<SettingScreen> {
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle(statusBarColor: Color(0xFFE9E8E8)));
     timerCall == true
-        ? Future.delayed(const Duration(seconds: 1), () {
+        ? Future.delayed(const Duration(seconds: 2), () {
             setState(() {
               showLoder = false;
               timerCall = false;
@@ -313,7 +319,6 @@ class _SettingScreenState extends State<SettingScreen> {
             : Container(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,
-                // padding: const EdgeInsets.all(10),
                 child: SafeArea(
                     left: true,
                     top: true,
@@ -407,9 +412,16 @@ class _SettingScreenState extends State<SettingScreen> {
                                   onTap: () {
                                     Navigator.push(context, MaterialPageRoute(
                                       builder: (context) {
-                                        return EditProfileScreen();
+                                        return EditProfileScreen(
+                                            user_name: user_name,
+                                            user_email: user_email,
+                                            user_dob: user_dob,
+                                            user_mobile_no: user_mobile_no,
+                                            user_img: _bytesImage!);
                                       },
-                                    ));
+                                    )).then((_) {
+                                      setState(() {});
+                                    });
                                   },
                                   child: Container(
                                     alignment: Alignment.center,

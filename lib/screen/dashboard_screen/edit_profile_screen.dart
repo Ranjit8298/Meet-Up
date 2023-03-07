@@ -1,39 +1,64 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:meet_up/screen/dashboard_screen/settings_screen.dart';
 import 'package:meet_up/widgets/custom_textFormField.dart';
 
 class EditProfileScreen extends StatefulWidget {
+  String? user_name;
+  String? user_email;
+  String? user_dob;
+  String? user_mobile_no;
+  Uint8List? user_img;
+  EditProfileScreen(
+      {this.user_name,
+      this.user_email,
+      this.user_dob,
+      this.user_img,
+      this.user_mobile_no});
+
   @override
   State<EditProfileScreen> createState() => _EditProfileScreenState();
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
   final _formKey = GlobalKey<FormState>();
-  File? _image;
-  var firstNameTxt = TextEditingController(text: 'Ranjit');
-  var emailTxt = TextEditingController(text: 'test.egineer@gmail.com');
+  String _image = '';
+  String base64string = '';
+  var firstNameTxt = TextEditingController();
+  var emailTxt = TextEditingController();
   var dateTxt = TextEditingController();
 
   bool showLoder = true;
+  late String document_id;
+  var snackBar = SnackBar(
+      content:
+          Text('congratulations, Your data has been updated successfully.'));
+  var snackBarError = SnackBar(content: Text("Failed to update user data."));
 
   @override
   void initState() {
     super.initState();
-    dateTxt.text = "01-01-1999";
+    getDocIdFromFirebase();
+    dateTxt.text = widget.user_dob!;
+    firstNameTxt.text = widget.user_name!;
+    emailTxt.text = widget.user_email!;
   }
 
   Future getImageFromGallery() async {
     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (image != null) {
-      final imageTemporary = File(image.path);
+      final imageTemporary = image.path;
       setState(() {
         this._image = imageTemporary;
+        _storeUserData();
       });
     }
   }
@@ -41,11 +66,50 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Future getImageFromCamera() async {
     final image = await ImagePicker().pickImage(source: ImageSource.camera);
     if (image != null) {
-      final imageTemporary = File(image.path);
+      final imageTemporary = image.path;
       setState(() {
         this._image = imageTemporary;
+        _storeUserData();
       });
     }
+  }
+
+// get filter user's doc Id
+  Future getDocIdFromFirebase() async {
+    var collection = FirebaseFirestore.instance.collection('users');
+    var querySnapshots = await collection.get();
+    for (var snapshot in querySnapshots.docs) {
+      var documentData = snapshot.data();
+      if (documentData['user_mobileNo'] == widget.user_mobile_no) {
+        setState(() {
+          document_id = snapshot.id;
+        });
+      }
+    }
+  }
+
+  _storeUserData() async {
+    File imagefile = File(_image); //convert Path to File
+    Uint8List imagebytes = await imagefile.readAsBytes(); //convert to bytes
+    setState(() {
+      base64string = base64.encode(imagebytes);
+    }); //convert bytes to base64 string
+    print(base64string);
+  }
+
+  // update user data from firebase
+  Future updateUserDataFromFirebase() async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(document_id)
+        .update({
+          'user_firstName': firstNameTxt.text.toString(),
+          'user_email': emailTxt.text.toString(),
+          'user_dob': dateTxt.text.toString(),
+          // 'user_img': base64string 
+        })
+        .then((value) => (value) => print("User Updated ${value}"))
+        .catchError((error) => print("Failed to update user: $error"));
   }
 
   void _handleAttachmentPressed() {
@@ -145,6 +209,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     Future.delayed(const Duration(seconds: 1), () {
       setState(() {
         showLoder = false;
+        // getDocIdFromFirebase();
       });
     });
     return SafeArea(
@@ -174,39 +239,45 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             : Container(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,
-                padding: EdgeInsets.all(10),
+                color: Colors.white,
+                // padding: EdgeInsets.all(10),
                 child: SingleChildScrollView(
                   child: Form(
                     key: _formKey,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        // Center(
-                        //   child: Container(
-                        //     width: 240,
-                        //     height: 240,
-                        //     margin: const EdgeInsets.only(top: 10),
-                        //     child: Image.asset('assets/images/edit_profile.png'),
-                        //   ),
-                        // ),
                         Container(
                           margin: EdgeInsets.only(top: 20),
                           child: Stack(children: [
                             Container(
-                                child: _image != null
-                                    ? new CircleAvatar(
-                                        backgroundImage: new FileImage(_image!),
-                                        radius: 65,
-                                      )
-                                    : CircleAvatar(
-                                        backgroundColor: Colors.white,
-                                        backgroundImage: AssetImage(
-                                            'assets/images/user.png'),
-                                        radius: 60,
-                                      )),
+                              child: _image != ''
+                                  ? Container(
+                                      child: CircleAvatar(
+                                        backgroundColor: Color(0xFFD3D3D3),
+                                        radius: 61,
+                                        child: CircleAvatar(
+                                          radius: 60,
+                                          backgroundImage:
+                                              new FileImage(File(_image)),
+                                        ),
+                                      ),
+                                    )
+                                  : Container(
+                                      child: CircleAvatar(
+                                        backgroundColor: Color(0xFFD3D3D3),
+                                        radius: 61,
+                                        child: CircleAvatar(
+                                          radius: 60,
+                                          backgroundImage:
+                                              MemoryImage(widget.user_img!),
+                                        ),
+                                      ),
+                                    ),
+                            ),
                             Positioned(
-                              right: 8,
-                              bottom: 5,
+                              right: 7,
+                              bottom: 6,
                               child: InkWell(
                                 onTap: () {
                                   _handleAttachmentPressed();
@@ -233,6 +304,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                         CustomTextFormField(
                             txtController: firstNameTxt,
+                            textInputAction: TextInputAction.next,
                             onChanged: (firstNameTxt) {
                               print(firstNameTxt.text.toString());
                             },
@@ -259,6 +331,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             prefixIcon: Icon(Icons.email_rounded),
                             labelText: 'Email',
                             keyboardType: TextInputType.emailAddress,
+                            textInputAction: TextInputAction.done,
                             validator: (value) {
                               if (value!.toString().trim().isEmpty) {
                                 return 'Please enter email';
@@ -340,8 +413,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                 Colors.red),
                                       ),
                                       onPressed: () {
-                                        if (_formKey.currentState!
-                                            .validate()) {}
+                                        if (_formKey.currentState!.validate()) {
+                                          updateUserDataFromFirebase();
+                                          Navigator.pop(context);
+                                        }
                                       },
                                       child: Text('SAVE')),
                                 ),
